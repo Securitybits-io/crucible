@@ -1,0 +1,93 @@
+---
+- name: Remove generated schema from cached extension source
+  ansible.builtin.file:
+    path: "{{ gnome_shell_extension_source_path }}/schemas/gschemas.compiled"
+    state: absent
+
+- name: Update GNOME Shell extension source
+  ansible.builtin.git:
+    repo: "{{ gnome_shell_extension.repo }}"
+    dest: "{{ gnome_shell_extension_checkout_path }}"
+    version: "{{ gnome_shell_extension.version }}"
+    update: true
+    force: true
+  become: true
+  become_user: "{{ gnome_shell_extension_user }}"
+  register: gnome_shell_extension_clone
+
+- name: Inspect installed GNOME Shell extension
+  ansible.builtin.stat:
+    path: "{{ gnome_shell_extension_install_path }}"
+    follow: false
+  register: gnome_shell_extension_install
+
+- name: Inspect installed GNOME Shell extension metadata
+  ansible.builtin.stat:
+    path: "{{ gnome_shell_extension_install_path }}/metadata.json"
+  register: gnome_shell_extension_metadata
+
+- name: Remove stale GNOME Shell extension install
+  ansible.builtin.file:
+    path: "{{ gnome_shell_extension_install_path }}"
+    state: absent
+  when: >-
+    gnome_shell_extension_clone.changed
+    or (
+      gnome_shell_extension_install.stat.exists
+      and (
+        gnome_shell_extension_install.stat.islnk | default(false)
+        or not (gnome_shell_extension_install.stat.isdir | default(false))
+        or not (gnome_shell_extension_metadata.stat.exists | default(false))
+      )
+    )
+
+- name: Ensure installed GNOME Shell extension directory exists
+  ansible.builtin.file:
+    path: "{{ gnome_shell_extension_install_path }}"
+    state: directory
+    owner: "{{ gnome_shell_extension_user }}"
+    group: "{{ gnome_shell_extension_user }}"
+    mode: "0755"
+
+- name: Install GNOME Shell extension runtime files
+  ansible.builtin.copy:
+    src: "{{ gnome_shell_extension_source_path }}/"
+    dest: "{{ gnome_shell_extension_install_path }}/"
+    remote_src: true
+    mode: preserve
+  become: true
+  become_user: "{{ gnome_shell_extension_user }}"
+  when: >-
+    gnome_shell_extension_clone.changed
+    or not gnome_shell_extension_install.stat.exists
+    or gnome_shell_extension_install.stat.islnk | default(false)
+    or not (gnome_shell_extension_install.stat.isdir | default(false))
+    or not (gnome_shell_extension_metadata.stat.exists | default(false))
+
+- name: Remove Git metadata from installed GNOME Shell extension
+  ansible.builtin.file:
+    path: "{{ gnome_shell_extension_install_path }}/.git"
+    state: absent
+
+- name: Inspect GNOME Shell extension schema directory
+  ansible.builtin.stat:
+    path: "{{ gnome_shell_extension_install_path }}/schemas"
+  register: gnome_shell_extension_schema_directory
+
+- name: Compile GNOME Shell extension schemas
+  ansible.builtin.command:
+    argv:
+      - glib-compile-schemas
+      - "{{ gnome_shell_extension_install_path }}/schemas"
+  become: true
+  become_user: "{{ gnome_shell_extension_user }}"
+  changed_when: false
+  when: gnome_shell_extension_schema_directory.stat.isdir | default(false)
+
+- name: Ensure GNOME Shell extension ownership
+  ansible.builtin.file:
+    path: "{{ gnome_shell_extension_install_path }}"
+    state: directory
+    owner: "{{ gnome_shell_extension_user }}"
+    group: "{{ gnome_shell_extension_user }}"
+    recurse: true

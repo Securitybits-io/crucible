@@ -66,11 +66,11 @@ gnome_shell_enabled_extensions:
 gnome_shell_extension_cache_directory: .cache/crucible/gnome-shell-extensions
 gnome_shell_extension_directory: .local/share/gnome-shell/extensions
 gnome_shell_extension_sources:
-  # - name: ArcMenu
-  #   uuid: arcmenu@arcmenu.com
-  #   repo: https://gitlab.com/arcmenu/ArcMenu.git
-  #   version: HEAD
-  #   source_subdirectory: ""
+  - name: ArcMenu
+    uuid: arcmenu@arcmenu.com
+    repo: https://gitlab.com/arcmenu/ArcMenu.git
+    version: HEAD
+    source_subdirectory: ""
   - name: Open Bar
     uuid: openbar@neuromorph
     repo: https://github.com/neuromorph/openbar.git

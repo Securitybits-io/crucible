@@ -10,45 +10,16 @@
   loop_control:
     label: "{{ item.0 }} {{ item.1 }}"
 
-- name: Clone GNOME Shell extension sources
-  ansible.builtin.git:
-    repo: "{{ item.1.repo }}"
-    dest: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
-    version: "{{ item.1.version }}"
-    update: true
-  become: true
-  become_user: "{{ item.0 }}"
-  loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
-  loop_control:
-    label: "{{ item.0 }} {{ item.1.name }}"
-
-- name: Link GNOME Shell extensions into user extension directory
-  ansible.builtin.file:
-    src: "{{ gnome_shell_extension_source_path }}"
-    dest: "/home/{{ item.0 }}/{{ gnome_shell_extension_directory }}/{{ item.1.uuid }}"
-    state: link
-  become: true
-  become_user: "{{ item.0 }}"
+- name: Install GNOME Shell extensions
+  ansible.builtin.include_tasks: extension.yml
   vars:
-    gnome_shell_extension_checkout_path: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
-    gnome_shell_extension_source_suffix: "{{ '/' ~ item.1.source_subdirectory if item.1.source_subdirectory | length > 0 else '' }}"
+    gnome_shell_extension_user: "{{ gnome_shell_extension_item.0 }}"
+    gnome_shell_extension: "{{ gnome_shell_extension_item.1 }}"
+    gnome_shell_extension_checkout_path: "/home/{{ gnome_shell_extension_item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ gnome_shell_extension_item.1.uuid }}"
+    gnome_shell_extension_source_suffix: "{{ '/' ~ gnome_shell_extension_item.1.source_subdirectory if gnome_shell_extension_item.1.source_subdirectory | length > 0 else '' }}"
     gnome_shell_extension_source_path: "{{ gnome_shell_extension_checkout_path }}{{ gnome_shell_extension_source_suffix }}"
+    gnome_shell_extension_install_path: "/home/{{ gnome_shell_extension_item.0 }}/{{ gnome_shell_extension_directory }}/{{ gnome_shell_extension_item.1.uuid }}"
   loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
   loop_control:
-    label: "{{ item.0 }} {{ item.1.name }}"
-
-- name: Compile GNOME Shell extension schemas
-  ansible.builtin.command:
-    argv:
-      - glib-compile-schemas
-      - "{{ gnome_shell_extension_source_path }}/schemas"
-  become: true
-  become_user: "{{ item.0 }}"
-  changed_when: false
-  vars:
-    gnome_shell_extension_checkout_path: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
-    gnome_shell_extension_source_suffix: "{{ '/' ~ item.1.source_subdirectory if item.1.source_subdirectory | length > 0 else '' }}"
-    gnome_shell_extension_source_path: "{{ gnome_shell_extension_checkout_path }}{{ gnome_shell_extension_source_suffix }}"
-  loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
-  loop_control:
-    label: "{{ item.0 }} {{ item.1.name }}"
+    loop_var: gnome_shell_extension_item
+    label: "{{ gnome_shell_extension_item.0 }} {{ gnome_shell_extension_item.1.name }}"
