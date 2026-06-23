@@ -1,0 +1,54 @@
+---
+- name: Ensure GNOME Shell extension directories exist
+  ansible.builtin.file:
+    path: "/home/{{ item.0 }}/{{ item.1 }}"
+    state: directory
+    owner: "{{ item.0 }}"
+    group: "{{ item.0 }}"
+    mode: "0755"
+  loop: "{{ gnome_desktop_users | product([gnome_shell_extension_cache_directory, gnome_shell_extension_directory]) | list }}"
+  loop_control:
+    label: "{{ item.0 }} {{ item.1 }}"
+
+- name: Clone GNOME Shell extension sources
+  ansible.builtin.git:
+    repo: "{{ item.1.repo }}"
+    dest: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
+    version: "{{ item.1.version }}"
+    update: true
+  become: true
+  become_user: "{{ item.0 }}"
+  loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
+  loop_control:
+    label: "{{ item.0 }} {{ item.1.name }}"
+
+- name: Link GNOME Shell extensions into user extension directory
+  ansible.builtin.file:
+    src: "{{ gnome_shell_extension_source_path }}"
+    dest: "/home/{{ item.0 }}/{{ gnome_shell_extension_directory }}/{{ item.1.uuid }}"
+    state: link
+  become: true
+  become_user: "{{ item.0 }}"
+  vars:
+    gnome_shell_extension_checkout_path: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
+    gnome_shell_extension_source_suffix: "{{ '/' ~ item.1.source_subdirectory if item.1.source_subdirectory | length > 0 else '' }}"
+    gnome_shell_extension_source_path: "{{ gnome_shell_extension_checkout_path }}{{ gnome_shell_extension_source_suffix }}"
+  loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
+  loop_control:
+    label: "{{ item.0 }} {{ item.1.name }}"
+
+- name: Compile GNOME Shell extension schemas
+  ansible.builtin.command:
+    argv:
+      - glib-compile-schemas
+      - "{{ gnome_shell_extension_source_path }}/schemas"
+  become: true
+  become_user: "{{ item.0 }}"
+  changed_when: false
+  vars:
+    gnome_shell_extension_checkout_path: "/home/{{ item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ item.1.uuid }}"
+    gnome_shell_extension_source_suffix: "{{ '/' ~ item.1.source_subdirectory if item.1.source_subdirectory | length > 0 else '' }}"
+    gnome_shell_extension_source_path: "{{ gnome_shell_extension_checkout_path }}{{ gnome_shell_extension_source_suffix }}"
+  loop: "{{ gnome_desktop_users | product(gnome_shell_extension_sources) | list }}"
+  loop_control:
+    label: "{{ item.0 }} {{ item.1.name }}"

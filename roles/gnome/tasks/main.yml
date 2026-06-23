@@ -73,6 +73,9 @@
     state: present
   loop: "{{ gnome_profile_picture_users }}"
 
+- name: Install GNOME Shell extensions
+  ansible.builtin.import_tasks: extensions.yml
+
 - name: Apply GNOME desktop settings
   ansible.builtin.import_tasks: settings.yml
 

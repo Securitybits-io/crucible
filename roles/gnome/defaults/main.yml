@@ -5,6 +5,9 @@ gnome_packages:
   - gnome-tweaks
   - gnome-shell-extensions
   - gnome-shell-extension-dashtodock
+  - gir1.2-gmenu-3.0
+  - libglib2.0-bin
+  - libgnome-menu-3-0
   - accountsservice
   - dconf-cli
   - dbus-user-session
@@ -54,8 +57,47 @@ gnome_favorite_apps:
   - spotify.desktop
 gnome_shell_enabled_extensions:
   - dash-to-dock@micxgx.gmail.com
+  - arcmenu@arcmenu.com
+  - openbar@neuromorph
+  - spotify-controls@Sonath21
+  - tilingshell@ferrarodomenico.com
+
+gnome_shell_extension_cache_directory: .cache/crucible/gnome-shell-extensions
+gnome_shell_extension_directory: .local/share/gnome-shell/extensions
+gnome_shell_extension_sources:
+  - name: ArcMenu
+    uuid: arcmenu@arcmenu.com
+    repo: https://gitlab.com/arcmenu/ArcMenu.git
+    version: HEAD
+    source_subdirectory: ""
+  - name: Open Bar
+    uuid: openbar@neuromorph
+    repo: https://github.com/neuromorph/openbar.git
+    version: HEAD
+    source_subdirectory: openbar@neuromorph
+  - name: Spotify Controls + Track Info
+    uuid: spotify-controls@Sonath21
+    repo: https://github.com/Sonath21/spotify-controls.git
+    version: HEAD
+    source_subdirectory: ""
+  - name: Tiling Shell
+    uuid: tilingshell@ferrarodomenico.com
+    repo: https://github.com/domferr/tilingshell.git
+    version: HEAD
+    source_subdirectory: resources
+
+gnome_arcmenu_show_activities_button: true
+gnome_arcmenu_menu_button_icon_size: 15
+
+gnome_openbar_border_radius: 20.0
+gnome_openbar_neon: false
+gnome_openbar_border_color:
+  - "0"
+  - "0"
+  - "0"
+
 gnome_dash_to_dock_position: LEFT
-gnome_dash_to_dock_height_fraction: 0.6
+gnome_dash_to_dock_height_fraction: 0.55
 gnome_dash_to_dock_intellihide: false
 gnome_dash_to_dock_apply_custom_theme: false
 
@@ -99,3 +141,17 @@ gnome_dconf_settings:
     value: "{{ gnome_dash_to_dock_height_fraction }}"
   - key: /org/gnome/shell/extensions/dash-to-dock/apply-custom-theme
     value: "{{ gnome_dash_to_dock_apply_custom_theme | lower }}"
+  - key: /org/gnome/shell/extensions/arcmenu/show-activities-button
+    value: "{{ gnome_arcmenu_show_activities_button | lower }}"
+  - key: /org/gnome/shell/extensions/arcmenu/menu-button-icon-size
+    value: "{{ gnome_arcmenu_menu_button_icon_size }}"
+  - key: /org/gnome/shell/extensions/openbar/bradius
+    value: "{{ gnome_openbar_border_radius }}"
+  - key: /org/gnome/shell/extensions/openbar/neon
+    value: "{{ gnome_openbar_neon | lower }}"
+  - key: /org/gnome/shell/extensions/openbar/bcolor
+    value: "{{ gnome_openbar_border_color | string }}"
+  - key: /org/gnome/shell/extensions/openbar/dark-bcolor
+    value: "{{ gnome_openbar_border_color | string }}"
+  - key: /org/gnome/shell/extensions/openbar/light-bcolor
+    value: "{{ gnome_openbar_border_color | string }}"
