@@ -47,6 +47,7 @@ gnome_idle_delay_seconds: 900
 gnome_idle_activation_enabled: true
 gnome_clock_format: 24h
 gnome_favorite_apps:
+  - Firefox.desktop
   - Alacritty.desktop
   - code.desktop
   - virtualbox.desktop
