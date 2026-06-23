@@ -16,6 +16,7 @@
     - role: gnome
     - role: workstation
     - role: productivity
+    - role: dotfiles
     - role: neovim
     - role: vscode
     - role: hashicorp

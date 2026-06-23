@@ -1,0 +1,13 @@
+---
+dotfiles_user: christoffer
+dotfiles_group: "{{ dotfiles_user }}"
+dotfiles_home: "/home/{{ dotfiles_user }}"
+dotfiles_repo_url: https://github.com/Securitybits-io/.dotfiles.git
+dotfiles_repo_version: main
+dotfiles_repo_dest: "{{ dotfiles_home }}/.dotfiles"
+dotfiles_target: "{{ dotfiles_home }}"
+
+# Empty means all top-level directories in the dotfiles repo are stowed.
+dotfiles_stow_packages: []
+dotfiles_stow_excluded_packages:
+  - .git

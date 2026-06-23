@@ -1,0 +1,73 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Dotfile provisioning only supports Debian targets."
+
+- name: Ensure dotfiles parent directory exists
+  ansible.builtin.file:
+    path: "{{ dotfiles_repo_dest | dirname }}"
+    state: directory
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"
+    mode: "0755"
+
+- name: Clone dotfiles repository
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo_url }}"
+    dest: "{{ dotfiles_repo_dest }}"
+    version: "{{ dotfiles_repo_version }}"
+    update: true
+  become: true
+  become_user: "{{ dotfiles_user }}"
+
+- name: Ensure dotfiles repository ownership
+  ansible.builtin.file:
+    path: "{{ dotfiles_repo_dest }}"
+    state: directory
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"
+    recurse: true
+
+- name: Discover dotfile package directories
+  ansible.builtin.find:
+    paths: "{{ dotfiles_repo_dest }}"
+    file_type: directory
+    hidden: false
+    recurse: false
+  register: dotfiles_discovered_packages
+
+- name: Select dotfile packages to stow
+  ansible.builtin.set_fact:
+    dotfiles_selected_stow_packages: >-
+      {{
+        dotfiles_stow_packages
+        if dotfiles_stow_packages | length > 0
+        else dotfiles_discovered_packages.files
+          | map(attribute='path')
+          | map('basename')
+          | reject('in', dotfiles_stow_excluded_packages)
+          | sort
+          | list
+      }}
+
+- name: Stow dotfile packages
+  ansible.builtin.command:
+    argv:
+      - stow
+      - --verbose=2
+      - --dir
+      - "{{ dotfiles_repo_dest }}"
+      - --target
+      - "{{ dotfiles_target }}"
+      - "{{ item }}"
+  become: true
+  become_user: "{{ dotfiles_user }}"
+  register: dotfiles_stow_result
+  changed_when: >-
+    'LINK:' in dotfiles_stow_result.stderr
+    or 'LINK:' in dotfiles_stow_result.stdout
+    or 'UNLINK:' in dotfiles_stow_result.stderr
+    or 'UNLINK:' in dotfiles_stow_result.stdout
+  loop: "{{ dotfiles_selected_stow_packages }}"

@@ -14,6 +14,7 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `playbooks/neovim-update.yml` - update NeoVim from the latest GitHub release.
 - `roles/base` - operating-system baseline.
 - `roles/gnome` - GNOME desktop and display manager.
+- `roles/dotfiles` - external dotfiles clone and GNU Stow links.
 - `roles/docker` - Docker Engine, Compose plugin, service, and user group.
 - `roles/hashicorp` - Terraform, Nomad, and Vagrant.
 - `roles/neovim` - NeoVim GitHub release installation.
@@ -42,8 +43,8 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
-base, GNOME, workstation, productivity, NeoVim, VS Code, HashiCorp, Docker,
-and virtualization roles:
+base, GNOME, workstation, productivity, dotfiles, NeoVim, VS Code, HashiCorp,
+Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -104,6 +105,7 @@ Desktop environment:
 Productivity tooling:
 
 - NeoVim from the latest GitHub release tarball.
+- Alacritty.
 - GNU Stow.
 - tmux.
 - fzf.
@@ -111,6 +113,12 @@ Productivity tooling:
 - Visual Studio Code from Microsoft's APT repository.
 - Terraform from HashiCorp's APT repository.
 - Nomad from HashiCorp's APT repository.
+
+Dotfiles:
+
+- `https://github.com/Securitybits-io/.dotfiles.git` cloned to `/home/christoffer/.dotfiles`.
+- GNU Stow links all top-level package directories into `/home/christoffer`.
+- Set `dotfiles_stow_packages` only when a smaller explicit package list is needed.
 
 Container tooling:
 

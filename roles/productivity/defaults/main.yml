@@ -1,5 +1,6 @@
 ---
 productivity_apt_packages:
+  - alacritty
   - stow
   - tmux
   - fzf
