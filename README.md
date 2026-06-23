@@ -90,6 +90,12 @@ Desktop environment:
 - GDM display manager.
 - GNOME Tweaks.
 - dconf tooling for later desktop settings such as wallpapers.
+- Dark theme with slate accent color.
+- `wallpaper-yellow-tree.png` installed as the default wallpaper.
+- Balanced power profile.
+- Automatic screen blank after 15 minutes.
+- Swedish keyboard layout with English locale text.
+- 24-hour clock with the Stockholm timezone from base settings.
 
 Productivity tooling:
 

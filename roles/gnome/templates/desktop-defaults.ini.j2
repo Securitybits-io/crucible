@@ -1,0 +1,15 @@
+[org/gnome/desktop/background]
+picture-uri='file://{{ gnome_wallpaper_path }}'
+picture-uri-dark='file://{{ gnome_wallpaper_path }}'
+picture-options='zoom'
+
+[org/gnome/desktop/interface]
+color-scheme='{{ gnome_color_scheme }}'
+accent-color='{{ gnome_accent_color }}'
+clock-format='{{ gnome_clock_format }}'
+
+[org/gnome/desktop/session]
+idle-delay=uint32 {{ gnome_idle_delay_seconds }}
+
+[org/gnome/desktop/input-sources]
+sources=[('xkb', '{{ gnome_keyboard_layout }}')]

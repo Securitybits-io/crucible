@@ -4,6 +4,23 @@ gnome_packages:
   - gnome-core
   - gnome-tweaks
   - dconf-cli
+  - keyboard-configuration
+  - power-profiles-daemon
 
 gnome_services:
   - gdm3
+
+gnome_wallpaper_file: wallpaper-yellow-tree.png
+gnome_wallpaper_directory: /usr/share/backgrounds/crucible
+gnome_wallpaper_path: "{{ gnome_wallpaper_directory }}/{{ gnome_wallpaper_file }}"
+
+gnome_color_scheme: prefer-dark
+gnome_accent_color: slate
+gnome_power_profile: balanced
+gnome_idle_delay_seconds: 900
+gnome_clock_format: 24h
+
+gnome_keyboard_model: pc105
+gnome_keyboard_layout: se
+gnome_keyboard_variant: ""
+gnome_keyboard_options: ""
