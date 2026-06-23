@@ -11,3 +11,9 @@ dotfiles_target: "{{ dotfiles_home }}"
 dotfiles_stow_packages: []
 dotfiles_stow_excluded_packages:
   - .git
+
+dotfiles_tmux_plugin_directory: "{{ dotfiles_home }}/.tmux/plugins"
+dotfiles_tmux_tpm_repo: https://github.com/tmux-plugins/tpm.git
+dotfiles_tmux_tpm_version: master
+dotfiles_tmux_tpm_dest: "{{ dotfiles_tmux_plugin_directory }}/tpm"
+dotfiles_tmux_tpm_install_plugins: "{{ dotfiles_tmux_tpm_dest }}/bin/install_plugins"

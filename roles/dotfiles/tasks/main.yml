@@ -71,3 +71,36 @@
     or 'UNLINK:' in dotfiles_stow_result.stderr
     or 'UNLINK:' in dotfiles_stow_result.stdout
   loop: "{{ dotfiles_selected_stow_packages }}"
+
+- name: Ensure tmux plugin directory exists
+  ansible.builtin.file:
+    path: "{{ dotfiles_tmux_plugin_directory }}"
+    state: directory
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"
+    mode: "0755"
+
+- name: Install tmux plugin manager
+  ansible.builtin.git:
+    repo: "{{ dotfiles_tmux_tpm_repo }}"
+    dest: "{{ dotfiles_tmux_tpm_dest }}"
+    version: "{{ dotfiles_tmux_tpm_version }}"
+    update: true
+  become: true
+  become_user: "{{ dotfiles_user }}"
+
+- name: Install tmux plugins through TPM
+  ansible.builtin.command:
+    argv:
+      - "{{ dotfiles_tmux_tpm_install_plugins }}"
+  become: true
+  become_user: "{{ dotfiles_user }}"
+  environment:
+    HOME: "{{ dotfiles_home }}"
+    TMUX_PLUGIN_MANAGER_PATH: "{{ dotfiles_tmux_plugin_directory }}/"
+  register: dotfiles_tmux_tpm_install_result
+  changed_when: >-
+    'Installing' in dotfiles_tmux_tpm_install_result.stdout
+    or 'installed' in dotfiles_tmux_tpm_install_result.stdout
+    or 'Installing' in dotfiles_tmux_tpm_install_result.stderr
+    or 'installed' in dotfiles_tmux_tpm_install_result.stderr

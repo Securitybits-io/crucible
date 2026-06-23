@@ -12,6 +12,19 @@ gnome_packages:
 gnome_services:
   - gdm3
 
+gnome_debloat_packages:
+  - gnome-tour
+  - malcontent
+  - gnome-contacts
+  - gnome-maps
+  - gnome-clocks
+  - epiphany
+  - simple-scan
+  - gnome-user-docs
+  - yelp
+  - nano
+  - gnome-weather
+
 gnome_desktop_users: "{{ base_admin_users | default([]) | map(attribute='name') | list }}"
 
 gnome_profile_picture_users: "{{ gnome_desktop_users }}"

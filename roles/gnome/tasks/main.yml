@@ -12,6 +12,13 @@
     update_cache: true
     cache_valid_time: 3600
 
+- name: Remove unwanted GNOME packages
+  ansible.builtin.apt:
+    name: "{{ gnome_debloat_packages }}"
+    state: absent
+    autoremove: true
+    purge: true
+
 - name: Ensure wallpaper directory exists
   ansible.builtin.file:
     path: "{{ gnome_wallpaper_directory }}"

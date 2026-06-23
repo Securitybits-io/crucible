@@ -92,6 +92,7 @@ Desktop environment:
 - GNOME Core.
 - GDM display manager.
 - GNOME Tweaks.
+- Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
 - `wallpaper-yellow-tree.png` installed as the default wallpaper.
@@ -119,6 +120,7 @@ Dotfiles:
 - `https://github.com/Securitybits-io/.dotfiles.git` cloned to `/home/christoffer/.dotfiles`.
 - GNU Stow links all top-level package directories into `/home/christoffer`.
 - Set `dotfiles_stow_packages` only when a smaller explicit package list is needed.
+- tmux plugin manager and configured tmux plugins are cloned into `/home/christoffer/.tmux/plugins`.
 
 Container tooling:
 

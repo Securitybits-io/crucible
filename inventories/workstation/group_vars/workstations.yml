@@ -32,7 +32,6 @@ workstation_apt_packages:
   - network-manager
   - pipewire
   - pipewire-audio
-  - podman
   - wireplumber
 
 workstation_services:
