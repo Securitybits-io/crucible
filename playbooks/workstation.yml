@@ -18,4 +18,6 @@
     - role: productivity
     - role: neovim
     - role: vscode
+    - role: hashicorp
+    - role: docker
     - role: virtualization

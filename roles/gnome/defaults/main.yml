@@ -3,6 +3,7 @@ gnome_packages:
   - gdm3
   - gnome-core
   - gnome-tweaks
+  - accountsservice
   - dconf-cli
   - dbus-user-session
   - keyboard-configuration
@@ -12,6 +13,11 @@ gnome_services:
   - gdm3
 
 gnome_desktop_users: "{{ base_admin_users | default([]) | map(attribute='name') | list }}"
+
+gnome_profile_picture_users: "{{ gnome_desktop_users }}"
+gnome_profile_picture_file: profile.jpg
+gnome_accountsservice_icon_directory: /var/lib/AccountsService/icons
+gnome_accountsservice_user_directory: /var/lib/AccountsService/users
 
 gnome_wallpaper_file: wallpaper-yellow-tree.png
 gnome_wallpaper_directory: /usr/share/backgrounds/crucible

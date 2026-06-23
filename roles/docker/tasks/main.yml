@@ -1,0 +1,63 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Docker installation only supports Debian targets."
+
+- name: Ensure Docker keyring directory exists
+  ansible.builtin.file:
+    path: "{{ docker_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Docker signing key
+  ansible.builtin.get_url:
+    url: "{{ docker_key_url }}"
+    dest: "{{ docker_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure Docker APT source
+  ansible.builtin.copy:
+    dest: "{{ docker_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ docker_repository_uri }}
+      Suites: {{ docker_apt_suite }}
+      Components: stable
+      Architectures: {{ docker_debian_architecture }}
+      Signed-By: {{ docker_key_path }}
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name: "{{ docker_packages }}"
+    state: present
+    update_cache: true
+
+- name: Ensure Docker service is enabled
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ docker_services }}"
+
+- name: Ensure Docker group exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add users to Docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups:
+      - docker
+    append: true
+    state: present
+  loop: "{{ docker_users }}"

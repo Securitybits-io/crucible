@@ -14,6 +14,8 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `playbooks/neovim-update.yml` - update NeoVim from the latest GitHub release.
 - `roles/base` - operating-system baseline.
 - `roles/gnome` - GNOME desktop and display manager.
+- `roles/docker` - Docker Engine, Compose plugin, service, and user group.
+- `roles/hashicorp` - Terraform, Nomad, and Vagrant.
 - `roles/neovim` - NeoVim GitHub release installation.
 - `roles/productivity` - everyday terminal productivity tools.
 - `roles/system_management` - package update and maintenance actions.
@@ -25,7 +27,7 @@ Ansible configuration for turning a base Debian installation into a workstation.
 
 Install Ansible on the control machine, then install required collections:
 
-```powershell
+```bash
 ansible-galaxy collection install -r requirements.yml
 ```
 
@@ -34,23 +36,23 @@ the playbooks from the workstation being provisioned.
 
 Validate connectivity:
 
-```powershell
-ansible workstations -m ansible.builtin.ping
+```bash
+ansible workstations -m ansible.builtin.ping --ask-become-pass
 ```
 
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
-base, GNOME, workstation, productivity, NeoVim, VS Code, and virtualization
-roles:
+base, GNOME, workstation, productivity, NeoVim, VS Code, HashiCorp, Docker,
+and virtualization roles:
 
-```powershell
-ansible-playbook playbooks/workstation.yml
+```bash
+ansible-playbook playbooks/workstation.yml --ask-become-pass
 ```
 
 Run in check mode before applying changes:
 
-```powershell
-ansible-playbook playbooks/workstation.yml --check --diff
+```bash
+ansible-playbook playbooks/workstation.yml --check --diff --ask-become-pass
 ```
 
 ## System Management
@@ -60,26 +62,26 @@ main workstation provisioning playbook already runs system maintenance.
 
 Refresh APT metadata only:
 
-```powershell
-ansible-playbook playbooks/apt-update.yml
+```bash
+ansible-playbook playbooks/apt-update.yml --ask-become-pass
 ```
 
 Run routine package maintenance with a safe upgrade, autoremove, and autoclean:
 
-```powershell
-ansible-playbook playbooks/system-maintenance.yml
+```bash
+ansible-playbook playbooks/system-maintenance.yml --ask-become-pass
 ```
 
 Run a Debian dist-upgrade and reboot when `/var/run/reboot-required` exists:
 
-```powershell
-ansible-playbook playbooks/distro-upgrade.yml
+```bash
+ansible-playbook playbooks/distro-upgrade.yml --ask-become-pass
 ```
 
 Update NeoVim from the latest GitHub release:
 
-```powershell
-ansible-playbook playbooks/neovim-update.yml
+```bash
+ansible-playbook playbooks/neovim-update.yml --ask-become-pass
 ```
 
 ## Included Applications
@@ -92,6 +94,7 @@ Desktop environment:
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
 - `wallpaper-yellow-tree.png` installed as the default wallpaper.
+- `profile.jpg` installed as the GNOME profile picture for configured admin users.
 - Balanced power profile.
 - Automatic screen blank after 15 minutes.
 - Swedish keyboard layout with English locale text.
@@ -106,6 +109,15 @@ Productivity tooling:
 - fzf.
 - ripgrep.
 - Visual Studio Code from Microsoft's APT repository.
+- Terraform from HashiCorp's APT repository.
+- Nomad from HashiCorp's APT repository.
+
+Container tooling:
+
+- Docker Engine from Docker's APT repository.
+- Docker Compose plugin.
+- Docker service enabled and started.
+- `christoffer` added to the `docker` group.
 
 Virtualization tooling:
 

@@ -1,0 +1,21 @@
+---
+docker_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+docker_key_url: https://download.docker.com/linux/debian/gpg
+docker_key_path: /etc/apt/keyrings/docker.asc
+docker_keyring_directory: /etc/apt/keyrings
+docker_sources_path: /etc/apt/sources.list.d/docker.sources
+docker_repository_uri: https://download.docker.com/linux/debian
+docker_apt_suite: "{{ ansible_distribution_release }}"
+
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+
+docker_services:
+  - docker
+
+docker_users:
+  - christoffer

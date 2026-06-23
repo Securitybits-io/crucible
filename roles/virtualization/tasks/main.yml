@@ -40,33 +40,3 @@
         name: "{{ virtualization_virtualbox_package }}"
         state: present
         update_cache: true
-
-- name: Configure HashiCorp APT repository
-  block:
-    - name: Install HashiCorp signing key
-      ansible.builtin.get_url:
-        url: "{{ virtualization_hashicorp_key_url }}"
-        dest: "{{ virtualization_hashicorp_key_path }}"
-        owner: root
-        group: root
-        mode: "0644"
-
-    - name: Configure HashiCorp APT source
-      ansible.builtin.copy:
-        dest: "{{ virtualization_hashicorp_sources_path }}"
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          Types: deb
-          URIs: {{ virtualization_hashicorp_repository_uri }}
-          Suites: {{ virtualization_hashicorp_apt_suite }}
-          Components: main
-          Architectures: {{ virtualization_debian_architecture }}
-          Signed-By: {{ virtualization_hashicorp_key_path }}
-
-    - name: Install Vagrant
-      ansible.builtin.apt:
-        name: "{{ virtualization_vagrant_package }}"
-        state: present
-        update_cache: true

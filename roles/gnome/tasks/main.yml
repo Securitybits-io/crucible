@@ -28,6 +28,44 @@
     group: root
     mode: "0644"
 
+- name: Ensure AccountsService icon directory exists
+  ansible.builtin.file:
+    path: "{{ gnome_accountsservice_icon_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure AccountsService user directory exists
+  ansible.builtin.file:
+    path: "{{ gnome_accountsservice_user_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install GNOME profile pictures
+  ansible.builtin.copy:
+    src: "{{ gnome_profile_picture_file }}"
+    dest: "{{ gnome_accountsservice_icon_directory }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ gnome_profile_picture_users }}"
+
+- name: Configure GNOME profile picture paths
+  community.general.ini_file:
+    path: "{{ gnome_accountsservice_user_directory }}/{{ item }}"
+    section: User
+    option: Icon
+    value: "{{ gnome_accountsservice_icon_directory }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+    no_extra_spaces: true
+    state: present
+  loop: "{{ gnome_profile_picture_users }}"
+
 - name: Apply GNOME desktop settings
   ansible.builtin.import_tasks: settings.yml
 
