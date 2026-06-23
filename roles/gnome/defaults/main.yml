@@ -58,6 +58,7 @@ gnome_favorite_apps:
   - spotify.desktop
 gnome_shell_enabled_extensions:
   - dash-to-dock@micxgx.gmail.com
+  - workspace-indicator@gnome-shell-extensions.gcampax.github.com
   - arcmenu@arcmenu.com
   - openbar@neuromorph
   - spotify-controls@Sonath21
@@ -96,6 +97,9 @@ gnome_openbar_border_color:
   - "0"
   - "0"
   - "0"
+
+gnome_spotify_controls_indicator_position: middle-right
+gnome_workspace_indicator_embed_previews: false
 
 gnome_dash_to_dock_position: LEFT
 gnome_dash_to_dock_height_fraction: 0.55
@@ -156,3 +160,7 @@ gnome_dconf_settings:
     value: "{{ gnome_openbar_border_color | string }}"
   - key: /org/gnome/shell/extensions/openbar/light-bcolor
     value: "{{ gnome_openbar_border_color | string }}"
+  - key: /org/gnome/shell/extensions/spotify-controls/position
+    value: "'{{ gnome_spotify_controls_indicator_position }}'"
+  - key: /org/gnome/shell/extensions/workspace-indicator/embed-previews
+    value: "{{ gnome_workspace_indicator_embed_previews | lower }}"

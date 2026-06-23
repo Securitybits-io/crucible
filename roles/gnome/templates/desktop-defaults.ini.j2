@@ -39,3 +39,9 @@ neon={{ gnome_openbar_neon | lower }}
 bcolor={{ gnome_openbar_border_color | string }}
 dark-bcolor={{ gnome_openbar_border_color | string }}
 light-bcolor={{ gnome_openbar_border_color | string }}
+
+[org/gnome/shell/extensions/spotify-controls]
+position='{{ gnome_spotify_controls_indicator_position }}'
+
+[org/gnome/shell/extensions/workspace-indicator]
+embed-previews={{ gnome_workspace_indicator_embed_previews | lower }}
