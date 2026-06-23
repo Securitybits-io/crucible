@@ -1,0 +1,14 @@
+---
+- name: Install workstation packages
+  ansible.builtin.apt:
+    name: "{{ workstation_apt_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Enable workstation services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ workstation_services }}"

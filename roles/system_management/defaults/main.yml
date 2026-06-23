@@ -1,0 +1,9 @@
+---
+system_management_apt_update_cache: true
+system_management_apt_cache_valid_time: 3600
+system_management_upgrade_packages: false
+system_management_upgrade_type: safe
+system_management_autoremove: true
+system_management_autoclean: true
+system_management_reboot_if_required: false
+system_management_reboot_timeout: 600

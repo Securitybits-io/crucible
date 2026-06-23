@@ -1,0 +1,7 @@
+---
+neovim_release_api_url: https://api.github.com/repos/neovim/neovim/releases/latest
+neovim_asset_architecture: x86_64
+neovim_asset_name: "nvim-linux-{{ neovim_asset_architecture }}.tar.gz"
+neovim_download_url: "https://github.com/neovim/neovim/releases/latest/download/{{ neovim_asset_name }}"
+neovim_install_root: /opt/neovim
+neovim_bin_path: /usr/local/bin/nvim

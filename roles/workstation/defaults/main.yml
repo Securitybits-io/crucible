@@ -1,0 +1,8 @@
+---
+workstation_apt_packages:
+  - build-essential
+  - flatpak
+  - network-manager
+
+workstation_services:
+  - NetworkManager

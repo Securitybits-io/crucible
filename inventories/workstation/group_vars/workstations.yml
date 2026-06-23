@@ -1,0 +1,40 @@
+---
+base_hostname: WorkTop
+base_timezone: Europe/Stockholm
+base_locale: en_US.UTF-8
+workstation_debian_architecture: amd64
+
+base_apt_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - git
+  - gnupg
+  - htop
+  - locales
+  - openssh-server
+  - sudo
+  - unzip
+  - vim
+  - wget
+
+base_admin_users:
+  - name: christoffer
+    groups:
+      - sudo
+    shell: /bin/bash
+
+workstation_apt_packages:
+  - build-essential
+  - dbus-user-session
+  - flatpak
+  - fonts-firacode
+  - network-manager
+  - pipewire
+  - pipewire-audio
+  - podman
+  - wireplumber
+
+workstation_services:
+  - NetworkManager
+  - ssh

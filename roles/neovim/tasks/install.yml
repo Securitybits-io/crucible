@@ -1,0 +1,49 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "NeoVim installation only supports Debian targets."
+
+- name: Query latest NeoVim release
+  ansible.builtin.uri:
+    url: "{{ neovim_release_api_url }}"
+    return_content: true
+  register: neovim_latest_release
+  changed_when: false
+
+- name: Set NeoVim release paths
+  ansible.builtin.set_fact:
+    neovim_release_tag: "{{ neovim_latest_release.json.tag_name }}"
+    neovim_release_path: "{{ neovim_install_root }}/{{ neovim_latest_release.json.tag_name }}"
+
+- name: Ensure NeoVim install directory exists
+  ansible.builtin.file:
+    path: "{{ neovim_release_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Extract NeoVim release
+  ansible.builtin.unarchive:
+    src: "{{ neovim_download_url }}"
+    dest: "{{ neovim_release_path }}"
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    creates: "{{ neovim_release_path }}/bin/nvim"
+
+- name: Link current NeoVim release
+  ansible.builtin.file:
+    src: "{{ neovim_release_path }}"
+    dest: "{{ neovim_install_root }}/current"
+    state: link
+    force: true
+
+- name: Link NeoVim binary
+  ansible.builtin.file:
+    src: "{{ neovim_install_root }}/current/bin/nvim"
+    dest: "{{ neovim_bin_path }}"
+    state: link
+    force: true

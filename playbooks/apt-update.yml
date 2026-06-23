@@ -1,0 +1,14 @@
+---
+- name: Refresh APT package metadata
+  hosts: workstations
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: system_management
+      vars:
+        system_management_apt_update_cache: true
+        system_management_upgrade_packages: false
+        system_management_autoremove: false
+        system_management_autoclean: false
+        system_management_reboot_if_required: false

@@ -1,0 +1,3 @@
+---
+- name: Update NeoVim from GitHub releases
+  ansible.builtin.import_tasks: install.yml

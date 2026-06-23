@@ -1,0 +1,13 @@
+---
+base_hostname: workstation
+base_timezone: Etc/UTC
+base_locale: en_US.UTF-8
+
+base_apt_packages:
+  - ca-certificates
+  - curl
+  - git
+  - locales
+  - sudo
+
+base_admin_users: []

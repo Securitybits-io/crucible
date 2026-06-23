@@ -1,0 +1,15 @@
+---
+virtualization_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+virtualization_virtualbox_key_url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+virtualization_virtualbox_key_path: /usr/share/keyrings/oracle-virtualbox-2016.asc
+virtualization_virtualbox_sources_path: /etc/apt/sources.list.d/virtualbox.sources
+virtualization_virtualbox_repository_uri: https://download.virtualbox.org/virtualbox/debian
+virtualization_virtualbox_apt_suite: "{{ ansible_distribution_release }}"
+virtualization_virtualbox_package: virtualbox-7.2
+
+virtualization_hashicorp_key_url: https://apt.releases.hashicorp.com/gpg
+virtualization_hashicorp_key_path: /usr/share/keyrings/hashicorp-archive-keyring.asc
+virtualization_hashicorp_sources_path: /etc/apt/sources.list.d/hashicorp.sources
+virtualization_hashicorp_repository_uri: https://apt.releases.hashicorp.com
+virtualization_hashicorp_apt_suite: "{{ ansible_distribution_release }}"
+virtualization_vagrant_package: vagrant

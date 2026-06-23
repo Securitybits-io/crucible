@@ -1,0 +1,41 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "System management playbooks only support Debian targets."
+
+- name: Refresh APT package metadata
+  ansible.builtin.apt:
+    update_cache: "{{ system_management_apt_update_cache }}"
+    cache_valid_time: "{{ system_management_apt_cache_valid_time }}"
+  when: system_management_apt_update_cache | bool
+
+- name: Upgrade installed packages
+  ansible.builtin.apt:
+    upgrade: "{{ system_management_upgrade_type }}"
+  when: system_management_upgrade_packages | bool
+
+- name: Remove unused dependencies
+  ansible.builtin.apt:
+    autoremove: true
+    state: absent
+  when: system_management_autoremove | bool
+
+- name: Clean obsolete package cache entries
+  ansible.builtin.apt:
+    autoclean: true
+  when: system_management_autoclean | bool
+
+- name: Check whether Debian requests a reboot
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: system_management_reboot_required
+  when: system_management_reboot_if_required | bool
+
+- name: Reboot when required
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ system_management_reboot_timeout }}"
+  when:
+    - system_management_reboot_if_required | bool
+    - system_management_reboot_required.stat.exists | default(false)

@@ -1,0 +1,72 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Virtualization tooling only supports Debian targets."
+
+- name: Ensure VirtualBox architecture is supported
+  ansible.builtin.assert:
+    that:
+      - virtualization_debian_architecture == "amd64"
+    fail_msg: "VirtualBox installation is currently configured only for amd64 Debian hosts."
+
+- name: Configure VirtualBox APT repository
+  block:
+    - name: Install Oracle VirtualBox signing key
+      ansible.builtin.get_url:
+        url: "{{ virtualization_virtualbox_key_url }}"
+        dest: "{{ virtualization_virtualbox_key_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure VirtualBox APT source
+      ansible.builtin.copy:
+        dest: "{{ virtualization_virtualbox_sources_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          Types: deb
+          URIs: {{ virtualization_virtualbox_repository_uri }}
+          Suites: {{ virtualization_virtualbox_apt_suite }}
+          Components: contrib
+          Architectures: {{ virtualization_debian_architecture }}
+          Signed-By: {{ virtualization_virtualbox_key_path }}
+
+    - name: Install VirtualBox
+      ansible.builtin.apt:
+        name: "{{ virtualization_virtualbox_package }}"
+        state: present
+        update_cache: true
+
+- name: Configure HashiCorp APT repository
+  block:
+    - name: Install HashiCorp signing key
+      ansible.builtin.get_url:
+        url: "{{ virtualization_hashicorp_key_url }}"
+        dest: "{{ virtualization_hashicorp_key_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure HashiCorp APT source
+      ansible.builtin.copy:
+        dest: "{{ virtualization_hashicorp_sources_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          Types: deb
+          URIs: {{ virtualization_hashicorp_repository_uri }}
+          Suites: {{ virtualization_hashicorp_apt_suite }}
+          Components: main
+          Architectures: {{ virtualization_debian_architecture }}
+          Signed-By: {{ virtualization_hashicorp_key_path }}
+
+    - name: Install Vagrant
+      ansible.builtin.apt:
+        name: "{{ virtualization_vagrant_package }}"
+        state: present
+        update_cache: true

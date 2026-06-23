@@ -1,0 +1,11 @@
+---
+- name: Update NeoVim from GitHub releases
+  hosts: workstations
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Run NeoVim update tasks
+      ansible.builtin.import_role:
+        name: neovim
+        tasks_from: update

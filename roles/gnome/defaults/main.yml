@@ -1,0 +1,9 @@
+---
+gnome_packages:
+  - gdm3
+  - gnome-core
+  - gnome-tweaks
+  - dconf-cli
+
+gnome_services:
+  - gdm3

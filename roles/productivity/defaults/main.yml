@@ -1,0 +1,6 @@
+---
+productivity_apt_packages:
+  - stow
+  - tmux
+  - fzf
+  - ripgrep
