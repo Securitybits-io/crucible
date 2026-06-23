@@ -3,6 +3,8 @@ gnome_packages:
   - gdm3
   - gnome-core
   - gnome-tweaks
+  - gnome-shell-extensions
+  - gnome-shell-extension-dashtodock
   - accountsservice
   - dconf-cli
   - dbus-user-session
@@ -44,6 +46,17 @@ gnome_power_profile: balanced
 gnome_idle_delay_seconds: 900
 gnome_idle_activation_enabled: true
 gnome_clock_format: 24h
+gnome_favorite_apps:
+  - Alacritty.desktop
+  - code.desktop
+  - virtualbox.desktop
+  - spotify.desktop
+gnome_shell_enabled_extensions:
+  - dash-to-dock@micxgx.gmail.com
+gnome_dash_to_dock_position: LEFT
+gnome_dash_to_dock_height_fraction: 0.6
+gnome_dash_to_dock_intellihide: false
+gnome_dash_to_dock_apply_custom_theme: false
 
 gnome_keyboard_model: pc105
 gnome_keyboard_layout: se
@@ -73,3 +86,15 @@ gnome_dconf_settings:
     value: "uint32 {{ gnome_idle_delay_seconds }}"
   - key: /org/gnome/desktop/input-sources/sources
     value: "[('xkb', '{{ gnome_keyboard_layout }}')]"
+  - key: /org/gnome/shell/enabled-extensions
+    value: "{{ gnome_shell_enabled_extensions | string }}"
+  - key: /org/gnome/shell/favorite-apps
+    value: "{{ gnome_favorite_apps | string }}"
+  - key: /org/gnome/shell/extensions/dash-to-dock/intellihide
+    value: "{{ gnome_dash_to_dock_intellihide | lower }}"
+  - key: /org/gnome/shell/extensions/dash-to-dock/dock-position
+    value: "'{{ gnome_dash_to_dock_position }}'"
+  - key: /org/gnome/shell/extensions/dash-to-dock/height-fraction
+    value: "{{ gnome_dash_to_dock_height_fraction }}"
+  - key: /org/gnome/shell/extensions/dash-to-dock/apply-custom-theme
+    value: "{{ gnome_dash_to_dock_apply_custom_theme | lower }}"

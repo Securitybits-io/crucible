@@ -13,6 +13,7 @@
         system_management_autoclean: true
         system_management_reboot_if_required: false
     - role: base
+    - role: spotify
     - role: gnome
     - role: workstation
     - role: productivity

@@ -28,11 +28,13 @@ workstation_apt_packages:
   - build-essential
   - dbus-user-session
   - flatpak
+  - firefox-esr
   - fonts-firacode
   - network-manager
   - pipewire
   - pipewire-audio
   - wireplumber
+  - fastfetch
 
 workstation_services:
   - NetworkManager

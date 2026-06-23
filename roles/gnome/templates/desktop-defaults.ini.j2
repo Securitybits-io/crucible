@@ -18,3 +18,13 @@ idle-delay=uint32 {{ gnome_idle_delay_seconds }}
 
 [org/gnome/desktop/input-sources]
 sources=[('xkb', '{{ gnome_keyboard_layout }}')]
+
+[org/gnome/shell]
+enabled-extensions={{ gnome_shell_enabled_extensions | string }}
+favorite-apps={{ gnome_favorite_apps | string }}
+
+[org/gnome/shell/extensions/dash-to-dock]
+intellihide={{ gnome_dash_to_dock_intellihide | lower }}
+dock-position='{{ gnome_dash_to_dock_position }}'
+height-fraction={{ gnome_dash_to_dock_height_fraction }}
+apply-custom-theme={{ gnome_dash_to_dock_apply_custom_theme | lower }}

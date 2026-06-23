@@ -1,0 +1,10 @@
+---
+spotify_key_url: https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc
+spotify_keyring_directory: /etc/apt/keyrings
+spotify_key_path: "{{ spotify_keyring_directory }}/spotify.asc"
+spotify_sources_path: /etc/apt/sources.list.d/spotify.sources
+spotify_repository_uri: https://repository.spotify.com
+spotify_apt_suite: stable
+spotify_apt_components:
+  - non-free
+spotify_package: spotify-client

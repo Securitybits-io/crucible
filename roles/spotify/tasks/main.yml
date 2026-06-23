@@ -1,0 +1,41 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Spotify installation only supports Debian targets."
+
+- name: Ensure Spotify keyring directory exists
+  ansible.builtin.file:
+    path: "{{ spotify_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Spotify signing key
+  ansible.builtin.get_url:
+    url: "{{ spotify_key_url }}"
+    dest: "{{ spotify_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure Spotify APT source
+  ansible.builtin.copy:
+    dest: "{{ spotify_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ spotify_repository_uri }}
+      Suites: {{ spotify_apt_suite }}
+      Components: {{ spotify_apt_components | join(' ') }}
+      Signed-By: {{ spotify_key_path }}
+
+- name: Install Spotify client
+  ansible.builtin.apt:
+    name: "{{ spotify_package }}"
+    state: present
+    update_cache: true

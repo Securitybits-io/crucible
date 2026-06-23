@@ -19,6 +19,7 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/hashicorp` - Terraform, Nomad, and Vagrant.
 - `roles/neovim` - NeoVim GitHub release installation.
 - `roles/productivity` - everyday terminal productivity tools.
+- `roles/spotify` - Spotify desktop client repository and package installation.
 - `roles/system_management` - package update and maintenance actions.
 - `roles/vscode` - Visual Studio Code repository and package installation.
 - `roles/virtualization` - VirtualBox and Vagrant.
@@ -43,8 +44,8 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
-base, GNOME, workstation, productivity, dotfiles, NeoVim, VS Code, HashiCorp,
-Docker, and virtualization roles:
+base, Spotify, GNOME, workstation, productivity, dotfiles, NeoVim, VS Code,
+HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -92,6 +93,8 @@ Desktop environment:
 - GNOME Core.
 - GDM display manager.
 - GNOME Tweaks.
+- Dash-to-Dock enabled on the left with a 60% size limit, built-in theme, and intelligent autohide disabled.
+- Dash favorites set to Alacritty, VS Code, VirtualBox, and Spotify.
 - Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
@@ -112,6 +115,7 @@ Productivity tooling:
 - fzf.
 - ripgrep.
 - Visual Studio Code from Microsoft's APT repository.
+- Spotify from Spotify's APT repository.
 - Terraform from HashiCorp's APT repository.
 - Nomad from HashiCorp's APT repository.
 
