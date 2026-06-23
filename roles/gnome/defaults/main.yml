@@ -92,7 +92,8 @@ gnome_workspace_indicator_embed_previews: false
 
 gnome_dash_to_dock_position: LEFT
 gnome_dash_to_dock_height_fraction: 0.55
-gnome_dash_to_dock_intellihide: false
+gnome_dash_to_dock_intellihide: true
+gnome_dash_to_dock_intellihide_mode: ALL_WINDOWS
 gnome_dash_to_dock_apply_custom_theme: false
 
 gnome_keyboard_model: pc105
@@ -129,6 +130,8 @@ gnome_dconf_settings:
     value: "{{ gnome_favorite_apps | string }}"
   - key: /org/gnome/shell/extensions/dash-to-dock/intellihide
     value: "{{ gnome_dash_to_dock_intellihide | lower }}"
+  - key: /org/gnome/shell/extensions/dash-to-dock/intellihide-mode
+    value: "'{{ gnome_dash_to_dock_intellihide_mode }}'"
   - key: /org/gnome/shell/extensions/dash-to-dock/dock-position
     value: "'{{ gnome_dash_to_dock_position }}'"
   - key: /org/gnome/shell/extensions/dash-to-dock/height-fraction
