@@ -76,9 +76,9 @@ gnome_shell_extension_sources:
     source_subdirectory: ""
   - name: Tiling Shell
     uuid: tilingshell@ferrarodomenico.com
-    repo: https://github.com/domferr/tilingshell.git
-    version: HEAD
-    source_subdirectory: resources
+    install_method: archive
+    archive_url: https://github.com/domferr/tilingshell/releases/latest/download/tilingshell@ferrarodomenico.com.zip
+    required_file: extension.js
 
 gnome_openbar_border_radius: 20.0
 gnome_openbar_neon: false

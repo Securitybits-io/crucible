@@ -15,7 +15,10 @@
   vars:
     gnome_shell_extension_user: "{{ gnome_shell_extension_item.0 }}"
     gnome_shell_extension: "{{ gnome_shell_extension_item.1 }}"
+    gnome_shell_extension_install_method: "{{ gnome_shell_extension_item.1.install_method | default('git') }}"
+    gnome_shell_extension_required_file: "{{ gnome_shell_extension_item.1.required_file | default('extension.js') }}"
     gnome_shell_extension_checkout_path: "/home/{{ gnome_shell_extension_item.0 }}/{{ gnome_shell_extension_cache_directory }}/{{ gnome_shell_extension_item.1.uuid }}"
+    gnome_shell_extension_archive_path: "{{ gnome_shell_extension_checkout_path }}.zip"
     gnome_shell_extension_source_suffix: "{{ '/' ~ gnome_shell_extension_item.1.source_subdirectory if gnome_shell_extension_item.1.source_subdirectory | length > 0 else '' }}"
     gnome_shell_extension_source_path: "{{ gnome_shell_extension_checkout_path }}{{ gnome_shell_extension_source_suffix }}"
     gnome_shell_extension_install_path: "/home/{{ gnome_shell_extension_item.0 }}/{{ gnome_shell_extension_directory }}/{{ gnome_shell_extension_item.1.uuid }}"

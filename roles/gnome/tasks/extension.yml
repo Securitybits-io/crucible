@@ -1,8 +1,9 @@
 ---
-- name: Remove generated schema from cached extension source
+- name: Remove generated schema from cached GNOME Shell extension source
   ansible.builtin.file:
     path: "{{ gnome_shell_extension_source_path }}/schemas/gschemas.compiled"
     state: absent
+  when: gnome_shell_extension_install_method == "git"
 
 - name: Update GNOME Shell extension source
   ansible.builtin.git:
@@ -13,7 +14,18 @@
     force: true
   become: true
   become_user: "{{ gnome_shell_extension_user }}"
-  register: gnome_shell_extension_clone
+  register: gnome_shell_extension_git_source
+  when: gnome_shell_extension_install_method == "git"
+
+- name: Download packaged GNOME Shell extension
+  ansible.builtin.get_url:
+    url: "{{ gnome_shell_extension.archive_url }}"
+    dest: "{{ gnome_shell_extension_archive_path }}"
+    mode: "0644"
+  become: true
+  become_user: "{{ gnome_shell_extension_user }}"
+  register: gnome_shell_extension_archive
+  when: gnome_shell_extension_install_method == "archive"
 
 - name: Inspect installed GNOME Shell extension
   ansible.builtin.stat:
@@ -26,18 +38,31 @@
     path: "{{ gnome_shell_extension_install_path }}/metadata.json"
   register: gnome_shell_extension_metadata
 
+- name: Inspect installed GNOME Shell extension entrypoint
+  ansible.builtin.stat:
+    path: "{{ gnome_shell_extension_install_path }}/{{ gnome_shell_extension_required_file }}"
+  register: gnome_shell_extension_entrypoint
+
 - name: Remove stale GNOME Shell extension install
   ansible.builtin.file:
     path: "{{ gnome_shell_extension_install_path }}"
     state: absent
   when: >-
-    gnome_shell_extension_clone.changed
+    (
+      gnome_shell_extension_install_method == "git"
+      and gnome_shell_extension_git_source.changed
+    )
+    or (
+      gnome_shell_extension_install_method == "archive"
+      and gnome_shell_extension_archive.changed
+    )
     or (
       gnome_shell_extension_install.stat.exists
       and (
         gnome_shell_extension_install.stat.islnk | default(false)
         or not (gnome_shell_extension_install.stat.isdir | default(false))
         or not (gnome_shell_extension_metadata.stat.exists | default(false))
+        or not (gnome_shell_extension_entrypoint.stat.exists | default(false))
       )
     )
 
@@ -49,7 +74,7 @@
     group: "{{ gnome_shell_extension_user }}"
     mode: "0755"
 
-- name: Install GNOME Shell extension runtime files
+- name: Install GNOME Shell extension runtime files from source
   ansible.builtin.copy:
     src: "{{ gnome_shell_extension_source_path }}/"
     dest: "{{ gnome_shell_extension_install_path }}/"
@@ -58,11 +83,34 @@
   become: true
   become_user: "{{ gnome_shell_extension_user }}"
   when: >-
-    gnome_shell_extension_clone.changed
-    or not gnome_shell_extension_install.stat.exists
-    or gnome_shell_extension_install.stat.islnk | default(false)
-    or not (gnome_shell_extension_install.stat.isdir | default(false))
-    or not (gnome_shell_extension_metadata.stat.exists | default(false))
+    gnome_shell_extension_install_method == "git"
+    and (
+      gnome_shell_extension_git_source.changed
+      or not gnome_shell_extension_install.stat.exists
+      or gnome_shell_extension_install.stat.islnk | default(false)
+      or not (gnome_shell_extension_install.stat.isdir | default(false))
+      or not (gnome_shell_extension_metadata.stat.exists | default(false))
+      or not (gnome_shell_extension_entrypoint.stat.exists | default(false))
+    )
+
+- name: Install packaged GNOME Shell extension runtime files
+  ansible.builtin.unarchive:
+    src: "{{ gnome_shell_extension_archive_path }}"
+    dest: "{{ gnome_shell_extension_install_path }}"
+    remote_src: true
+    owner: "{{ gnome_shell_extension_user }}"
+    group: "{{ gnome_shell_extension_user }}"
+    mode: "0755"
+  when: >-
+    gnome_shell_extension_install_method == "archive"
+    and (
+      gnome_shell_extension_archive.changed
+      or not gnome_shell_extension_install.stat.exists
+      or gnome_shell_extension_install.stat.islnk | default(false)
+      or not (gnome_shell_extension_install.stat.isdir | default(false))
+      or not (gnome_shell_extension_metadata.stat.exists | default(false))
+      or not (gnome_shell_extension_entrypoint.stat.exists | default(false))
+    )
 
 - name: Remove Git metadata from installed GNOME Shell extension
   ansible.builtin.file:
