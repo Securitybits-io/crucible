@@ -120,7 +120,7 @@ Dotfiles:
 - `https://github.com/Securitybits-io/.dotfiles.git` cloned to `/home/christoffer/.dotfiles`.
 - GNU Stow links all top-level package directories into `/home/christoffer`.
 - Set `dotfiles_stow_packages` only when a smaller explicit package list is needed.
-- tmux plugin manager and configured tmux plugins are cloned into `/home/christoffer/.tmux/plugins`.
+- TPM is cloned into `/home/christoffer/.tmux/plugins/tpm`, then `install_plugins` installs plugins declared in `.tmux.conf`.
 
 Container tooling:
 
