@@ -25,9 +25,16 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/virtualization` - VirtualBox and Vagrant.
 - `roles/workstation` - workstation packages and services.
 
+## Prerequisites
+
+- Run this from the Debian workstation being provisioned.
+- The user running Ansible must be a member of the `sudo` group.
+- Ansible must be installed before running the playbooks.
+- The playbooks use `--ask-become-pass` because `christoffer` is not configured for passwordless sudo.
+
 ## Bootstrap
 
-Install Ansible on the control machine, then install required collections:
+Install required Ansible collections:
 
 ```bash
 ansible-galaxy collection install -r requirements.yml
@@ -93,8 +100,10 @@ Desktop environment:
 - GNOME Core.
 - GDM display manager.
 - GNOME Tweaks.
-- Dash-to-Dock enabled on the left with a 60% size limit, built-in theme, and intelligent autohide disabled.
-- Dash favorites set to Alacritty, VS Code, VirtualBox, and Spotify.
+- Dash-to-Dock enabled on the left with a 55% size limit, built-in theme, and Dodge Windows autohide.
+- Workspace Indicator enabled without workspace previews.
+- Open Bar, Spotify Controls + Track Info, and Tiling Shell enabled.
+- Dash favorites set to Firefox, Files, Alacritty, VS Code, VirtualBox, and Spotify.
 - Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
