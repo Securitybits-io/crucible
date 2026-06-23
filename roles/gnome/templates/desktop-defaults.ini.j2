@@ -1,11 +1,16 @@
 [org/gnome/desktop/background]
-picture-uri='file://{{ gnome_wallpaper_path }}'
-picture-uri-dark='file://{{ gnome_wallpaper_path }}'
+picture-uri='{{ gnome_wallpaper_uri }}'
+picture-uri-dark='{{ gnome_wallpaper_uri }}'
 picture-options='zoom'
+
+[org/gnome/desktop/screensaver]
+picture-uri='{{ gnome_wallpaper_uri }}'
+idle-activation-enabled={{ gnome_idle_activation_enabled | lower }}
 
 [org/gnome/desktop/interface]
 color-scheme='{{ gnome_color_scheme }}'
 accent-color='{{ gnome_accent_color }}'
+gtk-theme='{{ gnome_gtk_theme }}'
 clock-format='{{ gnome_clock_format }}'
 
 [org/gnome/desktop/session]

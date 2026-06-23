@@ -28,67 +28,8 @@
     group: root
     mode: "0644"
 
-- name: Configure system keyboard layout
-  ansible.builtin.template:
-    src: keyboard.j2
-    dest: /etc/default/keyboard
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Ensure dconf profile directory exists
-  ansible.builtin.file:
-    path: /etc/dconf/profile
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Configure dconf profile
-  ansible.builtin.copy:
-    dest: /etc/dconf/profile/user
-    owner: root
-    group: root
-    mode: "0644"
-    content: |
-      user-db:user
-      system-db:local
-  notify: Update dconf database
-
-- name: Ensure dconf defaults directory exists
-  ansible.builtin.file:
-    path: /etc/dconf/db/local.d
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Configure GNOME desktop defaults
-  ansible.builtin.template:
-    src: desktop-defaults.ini.j2
-    dest: /etc/dconf/db/local.d/00-crucible-desktop
-    owner: root
-    group: root
-    mode: "0644"
-  notify: Update dconf database
-
-- name: Enable power profile service
-  ansible.builtin.service:
-    name: power-profiles-daemon
-    enabled: true
-    state: started
-
-- name: Read current power profile
-  ansible.builtin.command:
-    cmd: powerprofilesctl get
-  register: gnome_current_power_profile
-  changed_when: false
-
-- name: Set power profile
-  ansible.builtin.command:
-    cmd: "powerprofilesctl set {{ gnome_power_profile }}"
-  when: gnome_current_power_profile.stdout != gnome_power_profile
-  changed_when: true
+- name: Apply GNOME desktop settings
+  ansible.builtin.import_tasks: settings.yml
 
 - name: Enable GNOME display manager
   ansible.builtin.service:

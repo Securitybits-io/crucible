@@ -1,4 +1,5 @@
 ---
+# dconf requires a database rebuild after system default files change.
 - name: Update dconf database
   ansible.builtin.command:
     cmd: dconf update

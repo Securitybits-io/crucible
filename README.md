@@ -96,6 +96,7 @@ Desktop environment:
 - Automatic screen blank after 15 minutes.
 - Swedish keyboard layout with English locale text.
 - 24-hour clock with the Stockholm timezone from base settings.
+- GNOME settings are applied to configured admin users with dconf.
 
 Productivity tooling:
 

@@ -4,23 +4,53 @@ gnome_packages:
   - gnome-core
   - gnome-tweaks
   - dconf-cli
+  - dbus-user-session
   - keyboard-configuration
   - power-profiles-daemon
 
 gnome_services:
   - gdm3
 
+gnome_desktop_users: "{{ base_admin_users | default([]) | map(attribute='name') | list }}"
+
 gnome_wallpaper_file: wallpaper-yellow-tree.png
 gnome_wallpaper_directory: /usr/share/backgrounds/crucible
 gnome_wallpaper_path: "{{ gnome_wallpaper_directory }}/{{ gnome_wallpaper_file }}"
+gnome_wallpaper_uri: "file://{{ gnome_wallpaper_path }}"
 
 gnome_color_scheme: prefer-dark
 gnome_accent_color: slate
+gnome_gtk_theme: Adwaita-dark
 gnome_power_profile: balanced
 gnome_idle_delay_seconds: 900
+gnome_idle_activation_enabled: true
 gnome_clock_format: 24h
 
 gnome_keyboard_model: pc105
 gnome_keyboard_layout: se
 gnome_keyboard_variant: ""
 gnome_keyboard_options: ""
+
+gnome_dconf_settings:
+  - key: /org/gnome/desktop/background/picture-uri
+    value: "'{{ gnome_wallpaper_uri }}'"
+  - key: /org/gnome/desktop/background/picture-uri-dark
+    value: "'{{ gnome_wallpaper_uri }}'"
+  - key: /org/gnome/desktop/background/picture-options
+    value: "'zoom'"
+  - key: /org/gnome/desktop/screensaver/picture-uri
+    value: "'{{ gnome_wallpaper_uri }}'"
+  - key: /org/gnome/desktop/screensaver/idle-activation-enabled
+    value: "{{ gnome_idle_activation_enabled | lower }}"
+  - key: /org/gnome/desktop/interface/color-scheme
+    value: "'{{ gnome_color_scheme }}'"
+  - key: /org/gnome/desktop/interface/accent-color
+    value: "'{{ gnome_accent_color }}'"
+  - key: /org/gnome/desktop/interface/gtk-theme
+    value: "'{{ gnome_gtk_theme }}'"
+  - key: /org/gnome/desktop/interface/clock-format
+    value: "'{{ gnome_clock_format }}'"
+  - key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 {{ gnome_idle_delay_seconds }}"
+  - key: /org/gnome/desktop/input-sources/sources
+    value: "[('xkb', '{{ gnome_keyboard_layout }}')]"
