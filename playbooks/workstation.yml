@@ -13,12 +13,14 @@
         system_management_autoclean: true
         system_management_reboot_if_required: false
     - role: base
+    - role: nvidia
     - role: spotify
     - role: gnome
     - role: workstation
     - role: productivity
     - role: dotfiles
     - role: neovim
+    - role: bitwarden
     - role: vscode
     - role: hashicorp
     - role: docker

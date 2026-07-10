@@ -9,4 +9,5 @@ hashicorp_apt_suite: "{{ ansible_distribution_release }}"
 hashicorp_packages:
   - terraform
   - nomad
+  - packer
   - vagrant

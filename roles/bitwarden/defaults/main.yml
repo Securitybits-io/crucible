@@ -1,0 +1,15 @@
+---
+bitwarden_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+bitwarden_release_api_url: https://api.github.com/repos/bitwarden/clients/releases?per_page=100
+
+bitwarden_install_desktop: true
+bitwarden_desktop_release_tag_pattern: ^desktop-v
+bitwarden_desktop_asset_pattern: "^Bitwarden-.*-{{ bitwarden_debian_architecture }}\\.deb$"
+
+bitwarden_install_cli: true
+bitwarden_cli_release_tag_pattern: ^cli-v
+bitwarden_cli_asset_pattern: ^bw-linux-[0-9].*\.zip$
+bitwarden_cli_install_root: /opt/bitwarden-cli
+bitwarden_cli_bin_path: /usr/local/bin/bw
+
+bitwarden_cache_directory: /var/cache/crucible/bitwarden

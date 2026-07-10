@@ -1,0 +1,66 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "NVIDIA driver installation only supports Debian targets."
+
+- name: Inspect PCI devices
+  ansible.builtin.find:
+    paths: /sys/bus/pci/devices
+    file_type: directory
+    recurse: false
+  register: nvidia_pci_devices
+
+- name: Read PCI vendor IDs
+  ansible.builtin.slurp:
+    src: "{{ item.path }}/vendor"
+  loop: "{{ nvidia_pci_devices.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: nvidia_pci_vendor_files
+
+- name: Detect NVIDIA GPU
+  ansible.builtin.set_fact:
+    nvidia_gpu_detected: >-
+      {{
+        nvidia_pci_vendor_files.results
+        | selectattr('content', 'defined')
+        | map(attribute='content')
+        | map('b64decode')
+        | map('trim')
+        | select('equalto', nvidia_pci_vendor_id)
+        | list
+        | length > 0
+      }}
+
+- name: Configure Debian non-free sources for NVIDIA drivers
+  ansible.builtin.copy:
+    dest: "{{ nvidia_debian_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ nvidia_debian_repository_uri }}
+      Suites: {{ nvidia_debian_apt_suite }} {{ nvidia_debian_apt_suite }}-updates
+      Components: {{ nvidia_debian_apt_components | join(' ') }}
+      Architectures: {{ nvidia_debian_architecture }}
+      Signed-By: {{ nvidia_debian_keyring_path }}
+
+      Types: deb
+      URIs: {{ nvidia_debian_security_repository_uri }}
+      Suites: {{ nvidia_debian_apt_suite }}-security
+      Components: {{ nvidia_debian_apt_components | join(' ') }}
+      Architectures: {{ nvidia_debian_architecture }}
+      Signed-By: {{ nvidia_debian_keyring_path }}
+  when:
+    - nvidia_gpu_detected
+    - nvidia_manage_debian_nonfree_sources
+
+- name: Install or update NVIDIA driver packages
+  ansible.builtin.apt:
+    name: "{{ nvidia_driver_packages }}"
+    state: "{{ nvidia_driver_package_state }}"
+    update_cache: true
+  when: nvidia_gpu_detected

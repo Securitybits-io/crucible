@@ -1,0 +1,168 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Bitwarden installation only supports Debian targets."
+
+- name: Ensure Bitwarden cache directory exists
+  ansible.builtin.file:
+    path: "{{ bitwarden_cache_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Query Bitwarden releases
+  ansible.builtin.uri:
+    url: "{{ bitwarden_release_api_url }}"
+    return_content: true
+    headers:
+      Accept: application/vnd.github+json
+  register: bitwarden_releases
+  changed_when: false
+
+- name: Select latest Bitwarden desktop release
+  ansible.builtin.set_fact:
+    bitwarden_desktop_release: >-
+      {{
+        bitwarden_releases.json
+        | selectattr('tag_name', 'match', bitwarden_desktop_release_tag_pattern)
+        | list
+        | first
+      }}
+  when: bitwarden_install_desktop
+
+- name: Ensure Bitwarden desktop release was found
+  ansible.builtin.assert:
+    that:
+      - bitwarden_desktop_release.tag_name is defined
+    fail_msg: "No Bitwarden desktop release was found in the GitHub release feed."
+  when: bitwarden_install_desktop
+
+- name: Select Bitwarden desktop Debian package
+  ansible.builtin.set_fact:
+    bitwarden_desktop_asset: >-
+      {{
+        bitwarden_desktop_release.assets
+        | selectattr('name', 'match', bitwarden_desktop_asset_pattern)
+        | list
+        | first
+      }}
+  when: bitwarden_install_desktop
+
+- name: Ensure Bitwarden desktop Debian package was found
+  ansible.builtin.assert:
+    that:
+      - bitwarden_desktop_asset.browser_download_url is defined
+    fail_msg: "No Bitwarden desktop Debian package matched {{ bitwarden_desktop_asset_pattern }}."
+  when: bitwarden_install_desktop
+
+- name: Download Bitwarden desktop package
+  ansible.builtin.get_url:
+    url: "{{ bitwarden_desktop_asset.browser_download_url }}"
+    dest: "{{ bitwarden_cache_directory }}/{{ bitwarden_desktop_asset.name }}"
+    checksum: "{{ bitwarden_desktop_asset.digest | default(omit) }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: bitwarden_install_desktop
+
+- name: Install Bitwarden desktop package
+  ansible.builtin.apt:
+    deb: "{{ bitwarden_cache_directory }}/{{ bitwarden_desktop_asset.name }}"
+    state: present
+  when: bitwarden_install_desktop
+
+- name: Select latest Bitwarden CLI release
+  ansible.builtin.set_fact:
+    bitwarden_cli_release: >-
+      {{
+        bitwarden_releases.json
+        | selectattr('tag_name', 'match', bitwarden_cli_release_tag_pattern)
+        | list
+        | first
+      }}
+  when: bitwarden_install_cli
+
+- name: Ensure Bitwarden CLI release was found
+  ansible.builtin.assert:
+    that:
+      - bitwarden_cli_release.tag_name is defined
+    fail_msg: "No Bitwarden CLI release was found in the GitHub release feed."
+  when: bitwarden_install_cli
+
+- name: Select Bitwarden CLI archive
+  ansible.builtin.set_fact:
+    bitwarden_cli_asset: >-
+      {{
+        bitwarden_cli_release.assets
+        | selectattr('name', 'match', bitwarden_cli_asset_pattern)
+        | list
+        | first
+      }}
+  when: bitwarden_install_cli
+
+- name: Ensure Bitwarden CLI archive was found
+  ansible.builtin.assert:
+    that:
+      - bitwarden_cli_asset.browser_download_url is defined
+    fail_msg: "No Bitwarden CLI archive matched {{ bitwarden_cli_asset_pattern }}."
+  when: bitwarden_install_cli
+
+- name: Set Bitwarden CLI release path
+  ansible.builtin.set_fact:
+    bitwarden_cli_release_path: "{{ bitwarden_cli_install_root }}/{{ bitwarden_cli_release.tag_name }}"
+  when: bitwarden_install_cli
+
+- name: Ensure Bitwarden CLI release directory exists
+  ansible.builtin.file:
+    path: "{{ bitwarden_cli_release_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: bitwarden_install_cli
+
+- name: Download Bitwarden CLI archive
+  ansible.builtin.get_url:
+    url: "{{ bitwarden_cli_asset.browser_download_url }}"
+    dest: "{{ bitwarden_cache_directory }}/{{ bitwarden_cli_asset.name }}"
+    checksum: "{{ bitwarden_cli_asset.digest | default(omit) }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: bitwarden_install_cli
+
+- name: Extract Bitwarden CLI archive
+  ansible.builtin.unarchive:
+    src: "{{ bitwarden_cache_directory }}/{{ bitwarden_cli_asset.name }}"
+    dest: "{{ bitwarden_cli_release_path }}"
+    remote_src: true
+    creates: "{{ bitwarden_cli_release_path }}/bw"
+  when: bitwarden_install_cli
+
+- name: Ensure Bitwarden CLI binary is executable
+  ansible.builtin.file:
+    path: "{{ bitwarden_cli_release_path }}/bw"
+    state: file
+    owner: root
+    group: root
+    mode: "0755"
+  when: bitwarden_install_cli
+
+- name: Link current Bitwarden CLI release
+  ansible.builtin.file:
+    src: "{{ bitwarden_cli_release_path }}"
+    dest: "{{ bitwarden_cli_install_root }}/current"
+    state: link
+    force: true
+  when: bitwarden_install_cli
+
+- name: Link Bitwarden CLI binary
+  ansible.builtin.file:
+    src: "{{ bitwarden_cli_install_root }}/current/bw"
+    dest: "{{ bitwarden_cli_bin_path }}"
+    state: link
+    force: true
+  when: bitwarden_install_cli

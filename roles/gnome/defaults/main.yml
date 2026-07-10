@@ -51,6 +51,7 @@ gnome_favorite_apps:
   - Firefox.desktop
   - org.gnome.Nautilus.desktop
   - Alacritty.desktop
+  - bitwarden.desktop
   - code.desktop
   - virtualbox.desktop
   - spotify.desktop
@@ -66,9 +67,9 @@ gnome_shell_extension_directory: .local/share/gnome-shell/extensions
 gnome_shell_extension_sources:
   - name: Open Bar
     uuid: openbar@neuromorph
-    repo: https://github.com/neuromorph/openbar.git
-    version: HEAD
-    source_subdirectory: openbar@neuromorph
+    install_method: archive
+    archive_url: https://extensions.gnome.org/download-extension/openbar@neuromorph.shell-extension.zip?version_tag=65598
+    required_file: extension.js
   - name: Spotify Controls + Track Info
     uuid: spotify-controls@Sonath21
     repo: https://github.com/Sonath21/spotify-controls.git

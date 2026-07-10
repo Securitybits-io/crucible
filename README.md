@@ -13,10 +13,12 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `playbooks/distro-upgrade.yml` - perform a Debian dist-upgrade and reboot if required.
 - `playbooks/neovim-update.yml` - update NeoVim from the latest GitHub release.
 - `roles/base` - operating-system baseline.
+- `roles/nvidia` - NVIDIA GPU detection and Debian driver installation.
 - `roles/gnome` - GNOME desktop and display manager.
 - `roles/dotfiles` - external dotfiles clone and GNU Stow links.
 - `roles/docker` - Docker Engine, Compose plugin, service, and user group.
-- `roles/hashicorp` - Terraform, Nomad, and Vagrant.
+- `roles/hashicorp` - Terraform, Nomad, Packer, and Vagrant.
+- `roles/bitwarden` - Bitwarden desktop and CLI from upstream releases.
 - `roles/neovim` - NeoVim GitHub release installation.
 - `roles/productivity` - everyday terminal productivity tools.
 - `roles/spotify` - Spotify desktop client repository and package installation.
@@ -51,8 +53,8 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
-base, Spotify, GNOME, workstation, productivity, dotfiles, NeoVim, VS Code,
-HashiCorp, Docker, and virtualization roles:
+base, NVIDIA hardware support, Spotify, GNOME, workstation, productivity,
+dotfiles, NeoVim, Bitwarden, VS Code, HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -95,6 +97,12 @@ ansible-playbook playbooks/neovim-update.yml --ask-become-pass
 
 ## Included Applications
 
+Hardware support:
+
+- NVIDIA PCI GPU detection through sysfs.
+- NVIDIA driver packages installed from Debian non-free repositories when NVIDIA hardware is present.
+- NVIDIA driver packages kept current with APT package updates on rerun.
+
 Desktop environment:
 
 - GNOME Core.
@@ -103,7 +111,7 @@ Desktop environment:
 - Dash-to-Dock enabled on the left with a 55% size limit, built-in theme, and Dodge Windows autohide.
 - Workspace Indicator enabled without workspace previews.
 - Open Bar, Spotify Controls + Track Info, and Tiling Shell enabled.
-- Dash favorites set to Firefox, Files, Alacritty, VS Code, VirtualBox, and Spotify.
+- Dash favorites set to Firefox, Files, Alacritty, Bitwarden, VS Code, VirtualBox, and Spotify.
 - Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
@@ -118,6 +126,7 @@ Desktop environment:
 Productivity tooling:
 
 - NeoVim from the latest GitHub release tarball.
+- Bitwarden desktop and CLI from the latest upstream release packages.
 - Alacritty.
 - GNU Stow.
 - tmux.
@@ -127,6 +136,8 @@ Productivity tooling:
 - Spotify from Spotify's APT repository.
 - Terraform from HashiCorp's APT repository.
 - Nomad from HashiCorp's APT repository.
+- Packer from HashiCorp's APT repository.
+- xorriso for ISO image work in later Packer builds.
 
 Dotfiles:
 

@@ -35,6 +35,7 @@ workstation_apt_packages:
   - pipewire-audio
   - wireplumber
   - fastfetch
+  - xorriso
 
 workstation_services:
   - NetworkManager
