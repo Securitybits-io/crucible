@@ -43,3 +43,7 @@ position='{{ gnome_spotify_controls_indicator_position }}'
 
 [org/gnome/shell/extensions/workspace-indicator]
 embed-previews={{ gnome_workspace_indicator_embed_previews | lower }}
+
+[org/gnome/shell/extensions/tilingshell]
+inner-gaps=uint32 {{ gnome_tilingshell_inner_gaps }}
+outer-gaps=uint32 {{ gnome_tilingshell_outer_gaps }}

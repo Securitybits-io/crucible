@@ -111,7 +111,7 @@ Desktop environment:
 - Dash-to-Dock enabled on the left with a 55% size limit, built-in theme, and Dodge Windows autohide.
 - Workspace Indicator enabled without workspace previews.
 - Open Bar enabled with Mainland bar type and square bar corners.
-- Spotify Controls + Track Info and Tiling Shell enabled.
+- Spotify Controls + Track Info and Tiling Shell enabled, with Tiling Shell inner and outer gaps set to 0.
 - Dash favorites set to Firefox, Files, Alacritty, Bitwarden, VS Code, VirtualBox, and Spotify.
 - Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.

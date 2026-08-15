@@ -91,6 +91,8 @@ gnome_openbar_border_color:
 
 gnome_spotify_controls_indicator_position: middle-right
 gnome_workspace_indicator_embed_previews: false
+gnome_tilingshell_inner_gaps: 0
+gnome_tilingshell_outer_gaps: 0
 
 gnome_dash_to_dock_position: LEFT
 gnome_dash_to_dock_height_fraction: 0.55
@@ -156,3 +158,7 @@ gnome_dconf_settings:
     value: "'{{ gnome_spotify_controls_indicator_position }}'"
   - key: /org/gnome/shell/extensions/workspace-indicator/embed-previews
     value: "{{ gnome_workspace_indicator_embed_previews | lower }}"
+  - key: /org/gnome/shell/extensions/tilingshell/inner-gaps
+    value: "uint32 {{ gnome_tilingshell_inner_gaps }}"
+  - key: /org/gnome/shell/extensions/tilingshell/outer-gaps
+    value: "uint32 {{ gnome_tilingshell_outer_gaps }}"
