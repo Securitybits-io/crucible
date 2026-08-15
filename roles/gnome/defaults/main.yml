@@ -81,7 +81,8 @@ gnome_shell_extension_sources:
     archive_url: https://github.com/domferr/tilingshell/releases/latest/download/tilingshell@ferrarodomenico.com.zip
     required_file: extension.js
 
-gnome_openbar_border_radius: 20.0
+gnome_openbar_bar_type: Mainland
+gnome_openbar_border_radius: 0.0
 gnome_openbar_neon: false
 gnome_openbar_border_color:
   - "0"
@@ -141,6 +142,8 @@ gnome_dconf_settings:
     value: "{{ gnome_dash_to_dock_apply_custom_theme | lower }}"
   - key: /org/gnome/shell/extensions/openbar/bradius
     value: "{{ gnome_openbar_border_radius }}"
+  - key: /org/gnome/shell/extensions/openbar/bartype
+    value: "'{{ gnome_openbar_bar_type }}'"
   - key: /org/gnome/shell/extensions/openbar/neon
     value: "{{ gnome_openbar_neon | lower }}"
   - key: /org/gnome/shell/extensions/openbar/bcolor
