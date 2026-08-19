@@ -1,0 +1,136 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "AI CLI installation only supports Debian targets."
+
+- name: Ensure Codex CLI cache directory exists
+  ansible.builtin.file:
+    path: "{{ ai_cli_codex_cache_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: ai_cli_codex_install
+
+- name: Query latest Codex CLI release
+  ansible.builtin.uri:
+    url: "{{ ai_cli_codex_release_api_url }}"
+    return_content: true
+    headers:
+      Accept: application/vnd.github+json
+  register: ai_cli_codex_release
+  changed_when: false
+  when: ai_cli_codex_install
+
+- name: Select Codex CLI release asset
+  ansible.builtin.set_fact:
+    ai_cli_codex_asset: >-
+      {{
+        ai_cli_codex_release.json.assets
+        | selectattr('name', 'equalto', ai_cli_codex_asset_name)
+        | list
+        | first
+      }}
+    ai_cli_codex_release_path: "{{ ai_cli_codex_install_root }}/{{ ai_cli_codex_release.json.tag_name }}"
+  when: ai_cli_codex_install
+
+- name: Ensure Codex CLI release asset was found
+  ansible.builtin.assert:
+    that:
+      - ai_cli_codex_asset.browser_download_url is defined
+    fail_msg: "No Codex CLI release asset matched {{ ai_cli_codex_asset_name }}."
+  when: ai_cli_codex_install
+
+- name: Ensure Codex CLI release directory exists
+  ansible.builtin.file:
+    path: "{{ ai_cli_codex_release_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: ai_cli_codex_install
+
+- name: Download Codex CLI release archive
+  ansible.builtin.get_url:
+    url: "{{ ai_cli_codex_asset.browser_download_url }}"
+    dest: "{{ ai_cli_codex_cache_directory }}/{{ ai_cli_codex_asset.name }}"
+    checksum: "{{ ai_cli_codex_asset.digest | default(omit) }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: ai_cli_codex_install
+
+- name: Extract Codex CLI release archive
+  ansible.builtin.unarchive:
+    src: "{{ ai_cli_codex_cache_directory }}/{{ ai_cli_codex_asset.name }}"
+    dest: "{{ ai_cli_codex_release_path }}"
+    remote_src: true
+    creates: "{{ ai_cli_codex_release_path }}/{{ ai_cli_codex_binary_name }}"
+  when: ai_cli_codex_install
+
+- name: Ensure Codex CLI binary is executable
+  ansible.builtin.file:
+    path: "{{ ai_cli_codex_release_path }}/{{ ai_cli_codex_binary_name }}"
+    state: file
+    owner: root
+    group: root
+    mode: "0755"
+  when: ai_cli_codex_install
+
+- name: Link current Codex CLI release
+  ansible.builtin.file:
+    src: "{{ ai_cli_codex_release_path }}"
+    dest: "{{ ai_cli_codex_install_root }}/current"
+    state: link
+    force: true
+  when: ai_cli_codex_install
+
+- name: Link Codex CLI binary
+  ansible.builtin.file:
+    src: "{{ ai_cli_codex_install_root }}/current/{{ ai_cli_codex_binary_name }}"
+    dest: "{{ ai_cli_codex_bin_path }}"
+    state: link
+    force: true
+  when: ai_cli_codex_install
+
+- name: Ensure Claude Code keyring directory exists
+  ansible.builtin.file:
+    path: "{{ ai_cli_claude_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: ai_cli_claude_install
+
+- name: Install Claude Code signing key
+  ansible.builtin.get_url:
+    url: "{{ ai_cli_claude_key_url }}"
+    dest: "{{ ai_cli_claude_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: ai_cli_claude_install
+
+- name: Configure Claude Code APT source
+  ansible.builtin.copy:
+    dest: "{{ ai_cli_claude_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ ai_cli_claude_repository_uri }}
+      Suites: {{ ai_cli_claude_apt_suite }}
+      Components: main
+      Architectures: {{ ai_cli_debian_architecture }}
+      Signed-By: {{ ai_cli_claude_key_path }}
+  when: ai_cli_claude_install
+
+- name: Install or update Claude Code
+  ansible.builtin.apt:
+    name: "{{ ai_cli_claude_package }}"
+    state: "{{ ai_cli_claude_package_state }}"
+    update_cache: true
+  when: ai_cli_claude_install

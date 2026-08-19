@@ -1,0 +1,22 @@
+---
+ai_cli_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+
+ai_cli_codex_install: true
+ai_cli_codex_release_api_url: https://api.github.com/repos/openai/codex/releases/latest
+ai_cli_codex_asset_architecture: "{{ 'x86_64' if ai_cli_debian_architecture == 'amd64' else 'aarch64' if ai_cli_debian_architecture == 'arm64' else ai_cli_debian_architecture }}"
+ai_cli_codex_asset_platform: "{{ ai_cli_codex_asset_architecture }}-unknown-linux-musl"
+ai_cli_codex_asset_name: "codex-{{ ai_cli_codex_asset_platform }}.tar.gz"
+ai_cli_codex_binary_name: "codex-{{ ai_cli_codex_asset_platform }}"
+ai_cli_codex_install_root: /opt/codex-cli
+ai_cli_codex_bin_path: /usr/local/bin/codex
+ai_cli_codex_cache_directory: /var/cache/crucible/codex-cli
+
+ai_cli_claude_install: true
+ai_cli_claude_keyring_directory: /etc/apt/keyrings
+ai_cli_claude_key_url: https://downloads.claude.ai/keys/claude-code.asc
+ai_cli_claude_key_path: "{{ ai_cli_claude_keyring_directory }}/claude-code.asc"
+ai_cli_claude_sources_path: /etc/apt/sources.list.d/claude-code.sources
+ai_cli_claude_repository_uri: https://downloads.claude.ai/claude-code/apt/stable
+ai_cli_claude_apt_suite: stable
+ai_cli_claude_package: claude-code
+ai_cli_claude_package_state: latest
