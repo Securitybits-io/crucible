@@ -18,7 +18,8 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/dotfiles` - external dotfiles clone and GNU Stow links.
 - `roles/docker` - Docker Engine, Compose plugin, service, and user group.
 - `roles/hashicorp` - Terraform, Nomad, Packer, and Vagrant.
-- `roles/bitwarden` - Bitwarden desktop and CLI from upstream releases.
+- `roles/bitwarden` - Bitwarden desktop, CLI, and Secrets Manager CLI from upstream releases.
+- `roles/deskflow` - Deskflow keyboard and mouse sharing from Debian APT.
 - `roles/neovim` - NeoVim GitHub release installation.
 - `roles/productivity` - everyday terminal productivity tools.
 - `roles/spotify` - Spotify desktop client repository and package installation.
@@ -54,7 +55,7 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
 base, NVIDIA hardware support, Spotify, GNOME, workstation, productivity,
-dotfiles, NeoVim, Bitwarden, VS Code, HashiCorp, Docker, and virtualization roles:
+dotfiles, NeoVim, Bitwarden, Deskflow, VS Code, HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -127,7 +128,8 @@ Desktop environment:
 Productivity tooling:
 
 - NeoVim from the latest GitHub release tarball.
-- Bitwarden desktop and CLI from the latest upstream release packages.
+- Bitwarden desktop, `bw` CLI, and `bws` Secrets Manager CLI from the latest upstream release packages.
+- Deskflow from Debian APT for sharing a mouse and keyboard between computers.
 - Alacritty.
 - GNU Stow.
 - tmux.

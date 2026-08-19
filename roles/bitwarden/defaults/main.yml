@@ -12,4 +12,13 @@ bitwarden_cli_asset_pattern: ^bw-linux-[0-9].*\.zip$
 bitwarden_cli_install_root: /opt/bitwarden-cli
 bitwarden_cli_bin_path: /usr/local/bin/bw
 
+bitwarden_install_secrets_cli: true
+bitwarden_secrets_cli_release_api_url: https://api.github.com/repos/bitwarden/sdk-sm/releases?per_page=100
+bitwarden_secrets_cli_release_tag_pattern: ^bws-v
+bitwarden_secrets_cli_asset_architecture: "{{ 'x86_64' if bitwarden_debian_architecture == 'amd64' else 'aarch64' if bitwarden_debian_architecture == 'arm64' else bitwarden_debian_architecture }}"
+bitwarden_secrets_cli_asset_platform: "{{ bitwarden_secrets_cli_asset_architecture }}-unknown-linux-gnu"
+bitwarden_secrets_cli_asset_pattern: "^bws-{{ bitwarden_secrets_cli_asset_platform }}-[0-9].*\\.zip$"
+bitwarden_secrets_cli_install_root: /opt/bitwarden-secrets-cli
+bitwarden_secrets_cli_bin_path: /usr/local/bin/bws
+
 bitwarden_cache_directory: /var/cache/crucible/bitwarden

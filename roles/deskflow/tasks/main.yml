@@ -1,0 +1,13 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Deskflow installation only supports Debian targets."
+
+- name: Install Deskflow
+  ansible.builtin.apt:
+    name: "{{ deskflow_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

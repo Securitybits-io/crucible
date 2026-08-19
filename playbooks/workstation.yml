@@ -21,6 +21,7 @@
     - role: dotfiles
     - role: neovim
     - role: bitwarden
+    - role: deskflow
     - role: vscode
     - role: hashicorp
     - role: docker
