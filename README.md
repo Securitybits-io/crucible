@@ -22,6 +22,7 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/bitwarden` - Bitwarden desktop, CLI, and Secrets Manager CLI from upstream releases.
 - `roles/deskflow` - Deskflow keyboard and mouse sharing from Debian APT.
 - `roles/neovim` - NeoVim GitHub release installation.
+- `roles/powershell` - PowerShell from Microsoft's Debian package repository.
 - `roles/productivity` - everyday terminal productivity tools.
 - `roles/spotify` - Spotify desktop client repository and package installation.
 - `roles/system_management` - package update and maintenance actions.
@@ -56,7 +57,7 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
 base, NVIDIA hardware support, Spotify, GNOME, workstation, productivity,
-dotfiles, NeoVim, Bitwarden, Deskflow, AI CLIs, VS Code, HashiCorp, Docker, and virtualization roles:
+dotfiles, NeoVim, Bitwarden, Deskflow, AI CLIs, PowerShell, VS Code, HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -133,6 +134,8 @@ Productivity tooling:
 - Deskflow from Debian APT for sharing a mouse and keyboard between computers.
 - Codex CLI from the latest OpenAI GitHub release archive.
 - Claude Code CLI from Anthropic's APT repository.
+- PowerShell from Microsoft's Debian package repository.
+- WireGuard and WireGuard tools for VPN support.
 - Alacritty.
 - GNU Stow.
 - tmux.

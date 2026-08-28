@@ -23,6 +23,7 @@
     - role: bitwarden
     - role: deskflow
     - role: ai_cli
+    - role: powershell
     - role: vscode
     - role: hashicorp
     - role: docker

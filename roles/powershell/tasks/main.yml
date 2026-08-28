@@ -1,0 +1,33 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "PowerShell installation only supports Debian targets."
+
+- name: Ensure Crucible cache directory exists
+  ansible.builtin.file:
+    path: "{{ powershell_repository_package_cache_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Microsoft package repository configuration
+  ansible.builtin.get_url:
+    url: "{{ powershell_repository_package_url }}"
+    dest: "{{ powershell_repository_package_cache_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install Microsoft package repository configuration
+  ansible.builtin.apt:
+    deb: "{{ powershell_repository_package_cache_path }}"
+    state: present
+
+- name: Install or update PowerShell
+  ansible.builtin.apt:
+    name: "{{ powershell_package }}"
+    state: "{{ powershell_package_state }}"
+    update_cache: true

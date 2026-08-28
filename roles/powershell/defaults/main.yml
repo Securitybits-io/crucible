@@ -1,0 +1,5 @@
+---
+powershell_repository_package_url: "https://packages.microsoft.com/config/debian/{{ ansible_distribution_major_version }}/packages-microsoft-prod.deb"
+powershell_repository_package_cache_path: /var/cache/crucible/packages-microsoft-prod.deb
+powershell_package: powershell
+powershell_package_state: latest

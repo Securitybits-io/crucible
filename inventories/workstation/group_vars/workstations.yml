@@ -35,6 +35,8 @@ workstation_apt_packages:
   - pipewire-audio
   - wireplumber
   - fastfetch
+  - wireguard
+  - wireguard-tools
   - xorriso
 
 workstation_services:
