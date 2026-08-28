@@ -43,23 +43,6 @@
     mode: "0644"
   notify: Update dconf database
 
-- name: Ensure systemd-logind drop-in directory exists
-  ansible.builtin.file:
-    path: "{{ gnome_logind_lid_config_directory }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Configure lid close behavior
-  ansible.builtin.template:
-    src: logind-lid.conf.j2
-    dest: "{{ gnome_logind_lid_config_path }}"
-    owner: root
-    group: root
-    mode: "0644"
-  notify: Restart systemd-logind
-
 - name: Enable power profile service
   ansible.builtin.service:
     name: power-profiles-daemon

@@ -46,13 +46,6 @@ gnome_gtk_theme: Adwaita-dark
 gnome_power_profile: balanced
 gnome_idle_delay_seconds: 900
 gnome_idle_activation_enabled: true
-gnome_sleep_inactive_ac_type: nothing
-gnome_sleep_inactive_battery_type: nothing
-gnome_logind_lid_config_directory: /etc/systemd/logind.conf.d
-gnome_logind_lid_config_path: "{{ gnome_logind_lid_config_directory }}/00-crucible-lid.conf"
-gnome_logind_handle_lid_switch: ignore
-gnome_logind_handle_lid_switch_external_power: ignore
-gnome_logind_handle_lid_switch_docked: ignore
 gnome_clock_format: 24h
 gnome_favorite_apps:
   - firefox-esr.desktop
@@ -133,10 +126,6 @@ gnome_dconf_settings:
     value: "'{{ gnome_clock_format }}'"
   - key: /org/gnome/desktop/session/idle-delay
     value: "uint32 {{ gnome_idle_delay_seconds }}"
-  - key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type
-    value: "'{{ gnome_sleep_inactive_ac_type }}'"
-  - key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type
-    value: "'{{ gnome_sleep_inactive_battery_type }}'"
   - key: /org/gnome/desktop/input-sources/sources
     value: "[('xkb', '{{ gnome_keyboard_layout }}')]"
   - key: /org/gnome/shell/enabled-extensions

@@ -16,10 +16,6 @@ clock-format='{{ gnome_clock_format }}'
 [org/gnome/desktop/session]
 idle-delay=uint32 {{ gnome_idle_delay_seconds }}
 
-[org/gnome/settings-daemon/plugins/power]
-sleep-inactive-ac-type='{{ gnome_sleep_inactive_ac_type }}'
-sleep-inactive-battery-type='{{ gnome_sleep_inactive_battery_type }}'
-
 [org/gnome/desktop/input-sources]
 sources=[('xkb', '{{ gnome_keyboard_layout }}')]
 
