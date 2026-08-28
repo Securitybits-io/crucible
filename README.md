@@ -122,7 +122,8 @@ Desktop environment:
 - `wallpaper-yellow-tree.png` installed as the default wallpaper.
 - `profile.jpg` installed as the GNOME profile picture for configured admin users.
 - Balanced power profile.
-- Automatic screen blank after 15 minutes.
+- Automatic screen blank after 15 minutes without automatic suspend.
+- Lid close ignored for normal, external-power, and docked modes.
 - Swedish keyboard layout with English locale text.
 - 24-hour clock with the Stockholm timezone from base settings.
 - GNOME settings are applied to configured admin users with dconf.
