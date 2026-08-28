@@ -21,7 +21,6 @@
     - role: dotfiles
     - role: neovim
     - role: bitwarden
-    - role: deskflow
     - role: ai_cli
     - role: powershell
     - role: vscode
