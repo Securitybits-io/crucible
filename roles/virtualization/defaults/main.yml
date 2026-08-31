@@ -5,4 +5,9 @@ virtualization_virtualbox_key_path: /usr/share/keyrings/oracle-virtualbox-2016.a
 virtualization_virtualbox_sources_path: /etc/apt/sources.list.d/virtualbox.sources
 virtualization_virtualbox_repository_uri: https://download.virtualbox.org/virtualbox/debian
 virtualization_virtualbox_apt_suite: "{{ ansible_distribution_release }}"
+virtualization_virtualbox_kernel_packages:
+  - build-essential
+  - dkms
+  - "linux-headers-{{ virtualization_debian_architecture }}"
 virtualization_virtualbox_package: virtualbox-7.2
+virtualization_vbox_users: "{{ base_admin_users | default([]) | map(attribute='name') | list }}"

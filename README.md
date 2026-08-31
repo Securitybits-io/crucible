@@ -163,4 +163,7 @@ Container tooling:
 Virtualization tooling:
 
 - VirtualBox from Oracle's Debian APT repository.
+- VirtualBox kernel module build prerequisites: `build-essential`, `dkms`, and `linux-headers-amd64`.
+- VirtualBox host modules are rebuilt with `/sbin/vboxconfig` when prerequisites or VirtualBox change, or when `/dev/vboxdrv` is missing.
+- Configured admin users, including `christoffer`, are added to the `vboxusers` group.
 - Vagrant from HashiCorp's APT repository.

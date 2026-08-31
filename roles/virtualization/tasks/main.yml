@@ -11,6 +11,14 @@
       - virtualization_debian_architecture == "amd64"
     fail_msg: "VirtualBox installation is currently configured only for amd64 Debian hosts."
 
+- name: Install VirtualBox kernel module build prerequisites
+  ansible.builtin.apt:
+    name: "{{ virtualization_virtualbox_kernel_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  register: virtualization_virtualbox_kernel_prerequisites
+
 - name: Configure VirtualBox APT repository
   block:
     - name: Install Oracle VirtualBox signing key
@@ -40,3 +48,31 @@
         name: "{{ virtualization_virtualbox_package }}"
         state: present
         update_cache: true
+        cache_valid_time: 3600
+      register: virtualization_virtualbox_install
+
+- name: Add users to VirtualBox group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups:
+      - vboxusers
+    append: true
+    state: present
+  loop: "{{ virtualization_vbox_users }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Check VirtualBox support driver device
+  ansible.builtin.stat:
+    path: /dev/vboxdrv
+  register: virtualization_vboxdrv_device
+
+- name: Build and load VirtualBox kernel modules
+  ansible.builtin.command:
+    cmd: /sbin/vboxconfig
+  register: virtualization_vboxconfig
+  when: >
+    virtualization_virtualbox_kernel_prerequisites.changed
+    or virtualization_virtualbox_install.changed
+    or not virtualization_vboxdrv_device.stat.exists
+  changed_when: virtualization_vboxconfig.rc == 0
