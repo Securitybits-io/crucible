@@ -1,0 +1,27 @@
+---
+azure_cli_key_url: https://packages.microsoft.com/keys/microsoft.asc
+azure_cli_key_path: /etc/apt/keyrings/microsoft.asc
+azure_cli_keyring_directory: "{{ azure_cli_key_path | dirname }}"
+azure_cli_sources_path: /etc/apt/sources.list.d/azure-cli.sources
+azure_cli_repository_uri: https://packages.microsoft.com/repos/azure-cli/
+azure_cli_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+azure_cli_supported_debian_suites:
+  - bullseye
+  - bookworm
+azure_cli_fallback_apt_suite: bookworm
+azure_cli_apt_suite: >-
+  {{
+    ansible_distribution_release
+    if ansible_distribution_release in azure_cli_supported_debian_suites
+    else azure_cli_fallback_apt_suite
+  }}
+azure_cli_supported_architectures:
+  - amd64
+  - arm64
+azure_cli_repository_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+azure_cli_package: azure-cli
+azure_cli_package_state: latest

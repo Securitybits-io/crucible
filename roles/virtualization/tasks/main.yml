@@ -19,6 +19,18 @@
     cache_valid_time: 3600
   register: virtualization_virtualbox_kernel_prerequisites
 
+- name: Blacklist KVM modules for VirtualBox
+  ansible.builtin.copy:
+    dest: "{{ virtualization_kvm_blacklist_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% for module in virtualization_kvm_blacklist_modules %}
+      blacklist {{ module }}
+      {% endfor %}
+  notify: Update initramfs
+
 - name: Configure VirtualBox APT repository
   block:
     - name: Install Oracle VirtualBox signing key
@@ -61,6 +73,9 @@
   loop: "{{ virtualization_vbox_users }}"
   loop_control:
     label: "{{ item }}"
+
+- name: Apply kernel boot image updates before VirtualBox driver setup
+  ansible.builtin.meta: flush_handlers
 
 - name: Check VirtualBox support driver device
   ansible.builtin.stat:

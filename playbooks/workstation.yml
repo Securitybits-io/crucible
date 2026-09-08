@@ -22,6 +22,7 @@
     - role: neovim
     - role: bitwarden
     - role: ai_cli
+    - role: azure_cli
     - role: powershell
     - role: vscode
     - role: hashicorp

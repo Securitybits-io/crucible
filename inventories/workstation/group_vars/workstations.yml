@@ -26,6 +26,7 @@ base_admin_users:
 
 workstation_apt_packages:
   - build-essential
+  - chromium
   - dbus-user-session
   - flatpak
   - firefox-esr
@@ -35,6 +36,7 @@ workstation_apt_packages:
   - pipewire-audio
   - wireplumber
   - fastfetch
+  - rsync
   - wireguard
   - wireguard-tools
   - xorriso

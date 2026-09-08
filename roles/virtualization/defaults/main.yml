@@ -11,3 +11,8 @@ virtualization_virtualbox_kernel_packages:
   - "linux-headers-{{ virtualization_debian_architecture }}"
 virtualization_virtualbox_package: virtualbox-7.2
 virtualization_vbox_users: "{{ base_admin_users | default([]) | map(attribute='name') | list }}"
+virtualization_kvm_blacklist_path: /etc/modprobe.d/blacklist-kvm.conf
+virtualization_kvm_blacklist_modules:
+  - kvm_intel
+  - kvm_amd
+  - kvm

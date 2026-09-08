@@ -19,6 +19,7 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/docker` - Docker Engine, Compose plugin, service, and user group.
 - `roles/hashicorp` - Terraform, Nomad, Packer, and Vagrant.
 - `roles/ai_cli` - Codex CLI and Claude Code CLI.
+- `roles/azure_cli` - Azure CLI from Microsoft's APT repository.
 - `roles/bitwarden` - Bitwarden desktop, CLI, and Secrets Manager CLI from upstream releases.
 - `roles/neovim` - NeoVim GitHub release installation.
 - `roles/powershell` - PowerShell from Microsoft's Debian package repository.
@@ -56,7 +57,7 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
 base, NVIDIA hardware support, Spotify, GNOME, workstation, productivity,
-dotfiles, NeoVim, Bitwarden, AI CLIs, PowerShell, VS Code, HashiCorp, Docker, and virtualization roles:
+dotfiles, NeoVim, Bitwarden, AI CLIs, Azure CLI, PowerShell, VS Code, HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -114,7 +115,7 @@ Desktop environment:
 - Workspace Indicator enabled without workspace previews.
 - Open Bar enabled with Mainland bar type and square bar corners.
 - Spotify Controls + Track Info and Tiling Shell enabled, with Tiling Shell inner and outer gaps set to 0.
-- Dash favorites set to Firefox, Files, Alacritty, Bitwarden, VS Code, VirtualBox, and Spotify.
+- Dash favorites set to Firefox, Chromium, Files, Alacritty, Bitwarden, VS Code, VirtualBox, and Spotify.
 - Unwanted GNOME packages removed through `gnome_debloat_packages`.
 - dconf tooling for later desktop settings such as wallpapers.
 - Dark theme with slate accent color.
@@ -132,13 +133,17 @@ Productivity tooling:
 - Bitwarden desktop, `bw` CLI, and `bws` Secrets Manager CLI from the latest upstream release packages.
 - Codex CLI from the latest OpenAI GitHub release archive.
 - Claude Code CLI from Anthropic's APT repository.
+- Azure CLI from Microsoft's APT repository, kept current on rerun.
+- Azure CLI uses Microsoft's `bookworm` repository on newer Debian releases that are not published by Microsoft yet.
 - PowerShell from Microsoft's Debian package repository.
 - WireGuard and WireGuard tools for VPN support.
+- Chromium.
 - Alacritty.
 - GNU Stow.
 - tmux.
 - fzf.
 - ripgrep.
+- rsync.
 - Visual Studio Code from Microsoft's APT repository.
 - Spotify from Spotify's APT repository.
 - Terraform from HashiCorp's APT repository.
@@ -164,6 +169,7 @@ Virtualization tooling:
 
 - VirtualBox from Oracle's Debian APT repository.
 - VirtualBox kernel module build prerequisites: `build-essential`, `dkms`, and `linux-headers-amd64`.
+- KVM modules are blacklisted in `/etc/modprobe.d/blacklist-kvm.conf`, followed by `update-initramfs -u`.
 - VirtualBox host modules are rebuilt with `/sbin/vboxconfig` when prerequisites or VirtualBox change, or when `/dev/vboxdrv` is missing.
 - Configured admin users, including `christoffer`, are added to the `vboxusers` group.
 - Vagrant from HashiCorp's APT repository.

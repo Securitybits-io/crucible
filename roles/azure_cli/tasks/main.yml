@@ -1,0 +1,55 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Azure CLI installation only supports Debian targets."
+
+- name: Ensure Azure CLI architecture is supported
+  ansible.builtin.assert:
+    that:
+      - azure_cli_debian_architecture in azure_cli_supported_architectures
+    fail_msg: "Azure CLI installation supports only amd64 and arm64 Debian hosts."
+
+- name: Install Azure CLI repository prerequisites
+  ansible.builtin.apt:
+    name: "{{ azure_cli_repository_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure Azure CLI keyring directory exists
+  ansible.builtin.file:
+    path: "{{ azure_cli_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Microsoft signing key for Azure CLI
+  ansible.builtin.get_url:
+    url: "{{ azure_cli_key_url }}"
+    dest: "{{ azure_cli_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure Azure CLI APT source
+  ansible.builtin.copy:
+    dest: "{{ azure_cli_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ azure_cli_repository_uri }}
+      Suites: {{ azure_cli_apt_suite }}
+      Components: main
+      Architectures: {{ azure_cli_debian_architecture }}
+      Signed-By: {{ azure_cli_key_path }}
+
+- name: Install or update Azure CLI
+  ansible.builtin.apt:
+    name: "{{ azure_cli_package }}"
+    state: "{{ azure_cli_package_state }}"
+    update_cache: true
