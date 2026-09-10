@@ -34,6 +34,22 @@
     group: root
     mode: "0644"
 
+- name: Read Slack signing key details
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --show-keys
+      - --with-colons
+      - "{{ slack_key_path }}"
+  register: slack_key_details
+  changed_when: false
+
+- name: Verify Slack signing key ID
+  ansible.builtin.assert:
+    that:
+      - slack_key_id in slack_key_details.stdout
+    fail_msg: "Slack signing key ID did not match {{ slack_key_id }}."
+
 - name: Configure Slack APT source
   ansible.builtin.copy:
     dest: "{{ slack_sources_path }}"

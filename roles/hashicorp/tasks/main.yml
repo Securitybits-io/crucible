@@ -5,6 +5,13 @@
       - ansible_facts.distribution == "Debian"
     fail_msg: "HashiCorp tooling only supports Debian targets."
 
+- name: Install HashiCorp repository prerequisites
+  ansible.builtin.apt:
+    name: "{{ hashicorp_repository_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
 - name: Install HashiCorp signing key
   ansible.builtin.get_url:
     url: "{{ hashicorp_key_url }}"
@@ -12,6 +19,22 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Read HashiCorp signing key fingerprint
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --show-keys
+      - --with-colons
+      - "{{ hashicorp_key_path }}"
+  register: hashicorp_key_details
+  changed_when: false
+
+- name: Verify HashiCorp signing key fingerprint
+  ansible.builtin.assert:
+    that:
+      - hashicorp_key_fingerprint in hashicorp_key_details.stdout
+    fail_msg: "HashiCorp signing key fingerprint did not match {{ hashicorp_key_fingerprint }}."
 
 - name: Configure HashiCorp APT source
   ansible.builtin.copy:

@@ -2,6 +2,7 @@
 slack_key_url: https://packagecloud.io/slacktechnologies/slack/gpgkey
 slack_keyring_directory: /etc/apt/keyrings
 slack_key_path: "{{ slack_keyring_directory }}/slacktechnologies_slack-archive-keyring.asc"
+slack_key_id: C6ABDCF64DB9A0B2
 slack_sources_path: /etc/apt/sources.list.d/slack.sources
 slack_repository_uri: https://packagecloud.io/slacktechnologies/slack/debian/
 slack_apt_suite: jessie
@@ -13,5 +14,6 @@ slack_supported_architectures:
 slack_repository_packages:
   - apt-transport-https
   - ca-certificates
+  - gnupg
 slack_package: slack-desktop
 slack_package_state: latest

@@ -2,9 +2,13 @@
 hashicorp_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
 hashicorp_key_url: https://apt.releases.hashicorp.com/gpg
 hashicorp_key_path: /usr/share/keyrings/hashicorp-archive-keyring.asc
+hashicorp_key_fingerprint: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
 hashicorp_sources_path: /etc/apt/sources.list.d/hashicorp.sources
 hashicorp_repository_uri: https://apt.releases.hashicorp.com
 hashicorp_apt_suite: "{{ ansible_distribution_release }}"
+hashicorp_repository_packages:
+  - ca-certificates
+  - gnupg
 
 hashicorp_packages:
   - terraform
