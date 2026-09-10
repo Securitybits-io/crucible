@@ -118,10 +118,19 @@
     update_cache: true
   when: openclaude_cli_install
 
+- name: Ensure OpenClaude CLI install directory exists
+  ansible.builtin.file:
+    path: "{{ openclaude_cli_install_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: openclaude_cli_install
+
 - name: Install or update OpenClaude CLI
   community.general.npm:
     name: "{{ openclaude_cli_package }}"
-    global: true
+    path: "{{ openclaude_cli_install_directory }}"
     state: "{{ openclaude_cli_package_state }}"
     no_bin_links: "{{ openclaude_cli_no_bin_links }}"
   when: openclaude_cli_install
