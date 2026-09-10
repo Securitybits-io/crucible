@@ -13,6 +13,22 @@
     group: root
     mode: "0755"
 
+- name: Remove legacy Spotify APT source files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ spotify_legacy_source_paths }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Remove legacy Spotify trusted keyring files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ spotify_legacy_key_paths }}"
+  loop_control:
+    label: "{{ item }}"
+
 - name: Install Spotify signing key
   ansible.builtin.get_url:
     url: "{{ spotify_key_url }}"
@@ -39,3 +55,4 @@
     name: "{{ spotify_package }}"
     state: present
     update_cache: true
+    cache_valid_time: 3600

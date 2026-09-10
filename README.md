@@ -151,7 +151,7 @@ Productivity tooling:
 - rsync.
 - Visual Studio Code from Microsoft's APT repository.
 - Slack desktop from Slack's Packagecloud APT repository, kept current on rerun.
-- Spotify from Spotify's APT repository.
+- Spotify from Spotify's APT repository, with stale legacy Spotify source/key files removed before install.
 - Terraform from HashiCorp's APT repository.
 - Nomad from HashiCorp's APT repository.
 - Packer from HashiCorp's APT repository.

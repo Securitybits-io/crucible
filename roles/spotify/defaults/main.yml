@@ -8,3 +8,10 @@ spotify_apt_suite: stable
 spotify_apt_components:
   - non-free
 spotify_package: spotify-client
+spotify_legacy_source_paths:
+  - /etc/apt/sources.list.d/spotify.list
+  - /etc/apt/sources.list.d/repository-spotify-com.list
+spotify_legacy_key_paths:
+  - /etc/apt/trusted.gpg.d/spotify.gpg
+  - /etc/apt/trusted.gpg.d/repository-spotify-com-keyring.gpg
+  - /usr/share/keyrings/repository-spotify-com-keyring.gpg
