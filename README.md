@@ -22,8 +22,10 @@ Ansible configuration for turning a base Debian installation into a workstation.
 - `roles/azure_cli` - Azure CLI from Microsoft's APT repository.
 - `roles/bitwarden` - Bitwarden desktop, CLI, and Secrets Manager CLI from upstream releases.
 - `roles/neovim` - NeoVim GitHub release installation.
+- `roles/openclaude` - OpenClaude desktop app and CLI.
 - `roles/powershell` - PowerShell from Microsoft's Debian package repository.
 - `roles/productivity` - everyday terminal productivity tools.
+- `roles/slack` - Slack desktop client from Slack's Packagecloud APT repository.
 - `roles/spotify` - Spotify desktop client repository and package installation.
 - `roles/system_management` - package update and maintenance actions.
 - `roles/vscode` - Visual Studio Code repository and package installation.
@@ -56,8 +58,8 @@ ansible workstations -m ansible.builtin.ping --ask-become-pass
 
 Run the workstation provisioning playbook. This refreshes APT metadata, performs
 a Debian dist-upgrade, runs general package maintenance, and then applies the
-base, NVIDIA hardware support, Spotify, GNOME, workstation, productivity,
-dotfiles, NeoVim, Bitwarden, AI CLIs, Azure CLI, PowerShell, VS Code, HashiCorp, Docker, and virtualization roles:
+base, NVIDIA hardware support, Spotify, Slack, GNOME, workstation, productivity,
+dotfiles, NeoVim, Bitwarden, AI CLIs, OpenClaude, Azure CLI, PowerShell, VS Code, HashiCorp, Docker, and virtualization roles:
 
 ```bash
 ansible-playbook playbooks/workstation.yml --ask-become-pass
@@ -133,6 +135,9 @@ Productivity tooling:
 - Bitwarden desktop, `bw` CLI, and `bws` Secrets Manager CLI from the latest upstream release packages.
 - Codex CLI from the latest OpenAI GitHub release archive.
 - Claude Code CLI from Anthropic's APT repository.
+- OpenClaude desktop app from the latest GitHub release.
+- OpenClaude CLI from npm as `@gitlawb/openclaude`, kept current on rerun.
+- Node.js 22 from NodeSource for OpenClaude CLI runtime support.
 - Azure CLI from Microsoft's APT repository, kept current on rerun.
 - Azure CLI uses Microsoft's `bookworm` repository on newer Debian releases that are not published by Microsoft yet.
 - PowerShell from Microsoft's Debian package repository.
@@ -145,6 +150,7 @@ Productivity tooling:
 - ripgrep.
 - rsync.
 - Visual Studio Code from Microsoft's APT repository.
+- Slack desktop from Slack's Packagecloud APT repository, kept current on rerun.
 - Spotify from Spotify's APT repository.
 - Terraform from HashiCorp's APT repository.
 - Nomad from HashiCorp's APT repository.

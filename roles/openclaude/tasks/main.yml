@@ -1,0 +1,126 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "OpenClaude installation only supports Debian targets."
+
+- name: Ensure OpenClaude architecture is supported
+  ansible.builtin.assert:
+    that:
+      - openclaude_debian_architecture in openclaude_supported_architectures
+    fail_msg: "OpenClaude installation supports only amd64 and arm64 Debian hosts."
+
+- name: Ensure OpenClaude cache directory exists
+  ansible.builtin.file:
+    path: "{{ openclaude_cache_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Query latest OpenClaude release
+  ansible.builtin.uri:
+    url: "{{ openclaude_release_api_url }}"
+    return_content: true
+    headers:
+      Accept: application/vnd.github+json
+  register: openclaude_release
+  changed_when: false
+
+- name: Select OpenClaude Debian package
+  ansible.builtin.set_fact:
+    openclaude_asset: >-
+      {{
+        openclaude_release.json.assets
+        | selectattr('name', 'match', openclaude_asset_pattern)
+        | list
+        | first
+      }}
+
+- name: Ensure OpenClaude Debian package was found
+  ansible.builtin.assert:
+    that:
+      - openclaude_asset.browser_download_url is defined
+    fail_msg: "No OpenClaude Debian package matched {{ openclaude_asset_pattern }}."
+
+- name: Download OpenClaude Debian package
+  ansible.builtin.get_url:
+    url: "{{ openclaude_asset.browser_download_url }}"
+    dest: "{{ openclaude_cache_directory }}/{{ openclaude_asset.name }}"
+    checksum: "{{ openclaude_asset.digest | default(omit) }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install OpenClaude
+  ansible.builtin.apt:
+    deb: "{{ openclaude_cache_directory }}/{{ openclaude_asset.name }}"
+    state: present
+
+- name: Install NodeSource repository prerequisites
+  ansible.builtin.apt:
+    name: "{{ openclaude_nodejs_repository_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: openclaude_cli_install
+
+- name: Ensure NodeSource keyring directory exists
+  ansible.builtin.file:
+    path: "{{ openclaude_nodejs_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: openclaude_cli_install
+
+- name: Install NodeSource signing key
+  ansible.builtin.get_url:
+    url: "{{ openclaude_nodejs_key_url }}"
+    dest: "{{ openclaude_nodejs_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: openclaude_cli_install
+
+- name: Configure NodeSource APT source
+  ansible.builtin.copy:
+    dest: "{{ openclaude_nodejs_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ openclaude_nodejs_repository_uri }}
+      Suites: {{ openclaude_nodejs_apt_suite }}
+      Components: {{ openclaude_nodejs_apt_components | join(' ') }}
+      Architectures: {{ openclaude_debian_architecture }}
+      Signed-By: {{ openclaude_nodejs_key_path }}
+  when: openclaude_cli_install
+
+- name: Prefer Node.js from NodeSource
+  ansible.builtin.copy:
+    dest: "{{ openclaude_nodejs_preferences_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Package: {{ openclaude_nodejs_package }}
+      Pin: origin deb.nodesource.com
+      Pin-Priority: 600
+  when: openclaude_cli_install
+
+- name: Install or update Node.js for OpenClaude CLI
+  ansible.builtin.apt:
+    name: "{{ openclaude_nodejs_package }}"
+    state: "{{ openclaude_nodejs_package_state }}"
+    update_cache: true
+  when: openclaude_cli_install
+
+- name: Install or update OpenClaude CLI
+  community.general.npm:
+    name: "{{ openclaude_cli_package }}"
+    global: true
+    state: "{{ openclaude_cli_package_state }}"
+  when: openclaude_cli_install

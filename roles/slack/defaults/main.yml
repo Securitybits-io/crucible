@@ -1,0 +1,17 @@
+---
+slack_key_url: https://packagecloud.io/slacktechnologies/slack/gpgkey
+slack_keyring_directory: /etc/apt/keyrings
+slack_key_path: "{{ slack_keyring_directory }}/slacktechnologies_slack-archive-keyring.asc"
+slack_sources_path: /etc/apt/sources.list.d/slack.sources
+slack_repository_uri: https://packagecloud.io/slacktechnologies/slack/debian/
+slack_apt_suite: jessie
+slack_apt_components:
+  - main
+slack_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+slack_supported_architectures:
+  - amd64
+slack_repository_packages:
+  - apt-transport-https
+  - ca-certificates
+slack_package: slack-desktop
+slack_package_state: latest

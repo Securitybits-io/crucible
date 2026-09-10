@@ -1,0 +1,55 @@
+---
+- name: Ensure target is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == "Debian"
+    fail_msg: "Slack installation only supports Debian targets."
+
+- name: Ensure Slack architecture is supported
+  ansible.builtin.assert:
+    that:
+      - slack_debian_architecture in slack_supported_architectures
+    fail_msg: "Slack desktop installation currently supports only amd64 Debian hosts."
+
+- name: Install Slack repository prerequisites
+  ansible.builtin.apt:
+    name: "{{ slack_repository_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure Slack keyring directory exists
+  ansible.builtin.file:
+    path: "{{ slack_keyring_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Slack signing key
+  ansible.builtin.get_url:
+    url: "{{ slack_key_url }}"
+    dest: "{{ slack_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure Slack APT source
+  ansible.builtin.copy:
+    dest: "{{ slack_sources_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ slack_repository_uri }}
+      Suites: {{ slack_apt_suite }}
+      Components: {{ slack_apt_components | join(' ') }}
+      Architectures: {{ slack_debian_architecture }}
+      Signed-By: {{ slack_key_path }}
+
+- name: Install or update Slack
+  ansible.builtin.apt:
+    name: "{{ slack_package }}"
+    state: "{{ slack_package_state }}"
+    update_cache: true

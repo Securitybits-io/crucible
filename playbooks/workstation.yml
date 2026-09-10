@@ -15,6 +15,7 @@
     - role: base
     - role: nvidia
     - role: spotify
+    - role: slack
     - role: gnome
     - role: workstation
     - role: productivity
@@ -22,6 +23,7 @@
     - role: neovim
     - role: bitwarden
     - role: ai_cli
+    - role: openclaude
     - role: azure_cli
     - role: powershell
     - role: vscode

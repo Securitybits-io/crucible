@@ -1,0 +1,32 @@
+---
+openclaude_debian_architecture: "{{ workstation_debian_architecture | default('amd64') }}"
+openclaude_supported_architectures:
+  - amd64
+  - arm64
+openclaude_asset_architecture_patterns:
+  amd64: "(amd64|x64)"
+  arm64: "(arm64|aarch64)"
+openclaude_release_api_url: https://api.github.com/repos/Superior-curtis/OpenClaude/releases/latest
+openclaude_asset_pattern: "(?i)^OpenClaude.*{{ openclaude_asset_architecture_patterns[openclaude_debian_architecture] }}.*\\.deb$"
+openclaude_cache_directory: /var/cache/crucible/openclaude
+
+openclaude_cli_install: true
+openclaude_cli_package: "@gitlawb/openclaude"
+openclaude_cli_package_state: latest
+
+openclaude_nodejs_key_url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
+openclaude_nodejs_keyring_directory: /etc/apt/keyrings
+openclaude_nodejs_key_path: "{{ openclaude_nodejs_keyring_directory }}/nodesource.asc"
+openclaude_nodejs_sources_path: /etc/apt/sources.list.d/nodesource.sources
+openclaude_nodejs_preferences_path: /etc/apt/preferences.d/nodejs
+openclaude_nodejs_repository_uri: https://deb.nodesource.com/node_22.x
+openclaude_nodejs_apt_suite: nodistro
+openclaude_nodejs_apt_components:
+  - main
+openclaude_nodejs_package: nodejs
+openclaude_nodejs_package_state: latest
+openclaude_nodejs_repository_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
