@@ -13,6 +13,11 @@ openclaude_cache_directory: /var/cache/crucible/openclaude
 openclaude_cli_install: true
 openclaude_cli_package: "@gitlawb/openclaude"
 openclaude_cli_package_state: latest
+openclaude_cli_no_bin_links: true
+openclaude_cli_global_module_directory: /usr/lib/node_modules
+openclaude_cli_entrypoint: "{{ openclaude_cli_global_module_directory }}/{{ openclaude_cli_package }}/bin/openclaude"
+openclaude_cli_wrapper_directory: /usr/local/bin
+openclaude_cli_wrapper_path: "{{ openclaude_cli_wrapper_directory }}/openclaude-cli"
 
 openclaude_nodejs_key_url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
 openclaude_nodejs_keyring_directory: /etc/apt/keyrings

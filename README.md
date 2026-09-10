@@ -136,7 +136,7 @@ Productivity tooling:
 - Codex CLI from the latest OpenAI GitHub release archive.
 - Claude Code CLI from Anthropic's APT repository.
 - OpenClaude desktop app from the latest GitHub release.
-- OpenClaude CLI from npm as `@gitlawb/openclaude`, kept current on rerun.
+- OpenClaude CLI from npm as `@gitlawb/openclaude`, kept current on rerun and exposed as `openclaude-cli`.
 - Node.js 22 from NodeSource for OpenClaude CLI runtime support.
 - Azure CLI from Microsoft's APT repository, kept current on rerun.
 - Azure CLI uses Microsoft's `bookworm` repository on newer Debian releases that are not published by Microsoft yet.

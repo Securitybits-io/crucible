@@ -123,4 +123,25 @@
     name: "{{ openclaude_cli_package }}"
     global: true
     state: "{{ openclaude_cli_package_state }}"
+    no_bin_links: "{{ openclaude_cli_no_bin_links }}"
+  when: openclaude_cli_install
+
+- name: Ensure OpenClaude CLI wrapper directory exists
+  ansible.builtin.file:
+    path: "{{ openclaude_cli_wrapper_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: openclaude_cli_install
+
+- name: Install OpenClaude CLI wrapper
+  ansible.builtin.copy:
+    dest: "{{ openclaude_cli_wrapper_path }}"
+    owner: root
+    group: root
+    mode: "0755"
+    content: |
+      #!/usr/bin/env sh
+      exec node "{{ openclaude_cli_entrypoint }}" "$@"
   when: openclaude_cli_install
