@@ -33,6 +33,7 @@
     owner: root
     group: root
     mode: "0644"
+    force: true
 
 - name: Read Slack signing key details
   ansible.builtin.command:

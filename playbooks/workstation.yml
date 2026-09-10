@@ -14,6 +14,7 @@
         system_management_reboot_if_required: false
     - role: base
     - role: nvidia
+    - role: hashicorp
     - role: spotify
     - role: slack
     - role: gnome
@@ -27,6 +28,5 @@
     - role: azure_cli
     - role: powershell
     - role: vscode
-    - role: hashicorp
     - role: docker
     - role: virtualization
